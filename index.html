@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>낭만 해적단의 보물찾기 - 롯데월드 부산</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Pirata+One&display=swap');
+
+        body { margin: 0; padding: 0; background-color: #1a1a1a; }
+        .font-ko { font-family: 'Nanum Myeongjo', serif; }
+        .font-en { font-family: 'Pirata One', cursive; letter-spacing: 0.05em; }
+        
+        .mobile-app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: #f4e4bc;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 100%),
+                url("https://www.transparenttextures.com/patterns/p6.png");
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            color: #3d2b1f;
+            overflow-x: hidden;
+        }
+
+        .parchment {
+            background-color: #fdf5e6;
+            background-image: url("https://www.transparenttextures.com/patterns/old-paper.png");
+            border: 2px solid #d4af37;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2), inset 0 0 50px rgba(139,69,19,0.1);
+        }
+
+        .wood-btn {
+            background: linear-gradient(180deg, #8b4513 0%, #5d2906 100%);
+            border: 3px solid #3d1f08;
+            border-top: 3px solid #a0522d;
+            box-shadow: 0 8px 0 #2a1506, 0 15px 20px rgba(0,0,0,0.4);
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            transition: all 0.1s;
+        }
+        .wood-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #2a1506, 0 8px 10px rgba(0,0,0,0.4);
+        }
+
+        .gold-text {
+            color: #d4af37;
+            text-shadow: 2px 2px 0px #3d2b1f, 4px 4px 0px rgba(0,0,0,0.2);
+            -webkit-text-stroke: 1px #3d2b1f;
+        }
+
+        @keyframes storyFadeIn {
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .story-line { opacity: 0; animation: storyFadeIn 1s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards; }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(-2deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(-2deg); }
+        }
+        .float { animation: float 4s ease-in-out infinite; }
+
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: rgba(212, 175, 55, 0.5);
+            position: absolute;
+            top: 0;
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .keep-all { word-break: keep-all; }
+        .btn-active:active { transform: scale(0.95); transition: transform 0.1s; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Framer Motion global variable check
+        const motion = (window.Motion && window.Motion.motion) || (window.framerMotion && window.framerMotion.motion) || null;
+
+        const APP_ID = "lotte-world-pirates-2026";
+        const ADMIN_CODE = "7777";
+
+        const MISSION_DATA = [
+            { id: 'swingship', icon: '⚓', hint: '우리가 타고 온 배에 내리자마자 표시해뒀지' },
+            { id: 'flume', icon: '🛶', hint: '오거들이 만든 뗏목도 꽤 훌륭하더군.. 물론 우리 낭만 해적단의 배에 비할 수 없지만 말이야' },
+            { id: 'splash', icon: '🌊', hint: '크라켄을 여기서 다시 마주할 줄이야! 하지만 낭만 해적단한테는 안 된다 이 말이야!' },
+        ];
+
+        const PirateLogo = () => {
+            const Container = motion ? motion.div : 'div';
+            const Sparkle = motion ? motion.circle : 'circle';
+            
+            return (
+                <Container 
+                    {...(motion ? {
+                        initial: { scale: 0.5, opacity: 0, rotate: -10 },
+                        animate: { scale: 1, opacity: 1, rotate: 0 },
+                        transition: { type: "spring", stiffness: 260, damping: 20 }
+                    } : {})}
+                    className="relative w-full max-w-[340px] mb-8"
+                >
+                <svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-[0_20px_30px_rgba(0,0,0,0.3)]">
+                    <defs>
+                        <linearGradient id="popGold" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style={{stopColor:'#FFF5B2', stopOpacity:1}} />
+                            <stop offset="50%" style={{stopColor:'#FFD700', stopOpacity:1}} />
+                            <stop offset="100%" style={{stopColor:'#FFA500', stopOpacity:1}} />
+                        </linearGradient>
+                        <filter id="popShadow">
+                            <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#3d2b1f" floodOpacity="0.5"/>
+                        </filter>
+                    </defs>
+                    
+                    {/* Background Shine */}
+                    <circle cx="200" cy="110" r="80" fill="#FFF5B2" opacity="0.2">
+                        <animate attributeName="r" values="80;95;80" dur="3s" repeatCount="indefinite" />
+                    </circle>
+
+                    {/* Cute Skull with Heart Eyepatch */}
+                    <g transform="translate(160, 10) scale(0.8)">
+                        <path d="M50,20 C10,20 10,70 50,70 C90,70 90,20 50,20" fill="white" stroke="#3d2b1f" strokeWidth="4" />
+                        <path d="M35,45 Q50,45 50,65 Q50,45 65,45 Q50,45 50,25 Q50,45 35,45" fill="#8b0000" /> {/* Heart Eye */}
+                        <circle cx="65" cy="45" r="6" fill="#3d2b1f" /> {/* Right Eye */}
+                        <path d="M40,80 L60,80 L55,95 L45,95 Z" fill="white" stroke="#3d2b1f" strokeWidth="3" /> {/* Teeth */}
+                        {/* Pirate Hat */}
+                        <path d="M0,35 Q50,-10 100,35 L90,45 Q50,20 10,45 Z" fill="#3d2b1f" />
+                        <path d="M45,15 L55,15" stroke="#FFD700" strokeWidth="3" />
+                    </g>
+
+                    {/* Main Text */}
+                    <g filter="url(#popShadow)">
+                        <text x="50%" y="145" textAnchor="middle" fontFamily="'Nanum Myeongjo', serif" fontWeight="900" fontSize="34" fill="#3d2b1f" letterSpacing="1">
+                            낭만 해적단의
+                        </text>
+                        <text x="50%" y="210" textAnchor="middle" fontFamily="'Nanum Myeongjo', serif" fontWeight="900" fontSize="72" fill="url(#popGold)" stroke="#3d2b1f" strokeWidth="3" letterSpacing="-2">
+                            보물찾기
+                        </text>
+                    </g>
+
+                    {/* Sparkles */}
+                    <Sparkle 
+                        {...(motion ? {
+                            animate: { opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] },
+                            transition: { duration: 2, repeat: Infinity, delay: 0.5 }
+                        } : {})}
+                        cx="320" cy="160" r="6" fill="#FFD700" 
+                    />
+                    <Sparkle 
+                        {...(motion ? {
+                            animate: { opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] },
+                            transition: { duration: 2, repeat: Infinity, delay: 1.2 }
+                        } : {})}
+                        cx="80" cy="190" r="4" fill="#FFD700" 
+                    />
+                </svg>
+            </Container>
+            );
+        };
+
+        function App() {
+            const [step, setStep] = useState('intro');
+            const [nickname, setNickname] = useState('');
+            const [stamps, setStamps] = useState({ swingship: false, splash: false, flume: false, finalEvent: false });
+            const [showHint, setShowHint] = useState(null);
+            const [adminCodeInput, setAdminCodeInput] = useState("");
+            const [showFinalModal, setShowFinalModal] = useState(false);
+            const [isCapturing, setIsCapturing] = useState(false);
+            const [capturedImage, setCapturedImage] = useState(null);
+            const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
+            const certificateRef = useRef(null);
+
+            useEffect(() => {
+                const savedData = localStorage.getItem(APP_ID);
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    setNickname(parsed.nickname);
+                    setStamps(parsed.stamps);
+                    setStep('map');
+                }
+            }, []);
+
+            const saveProgress = (newStamps, newStep) => {
+                const data = { nickname, stamps: newStamps || stamps };
+                localStorage.setItem(APP_ID, JSON.stringify(data));
+                if (newStep) setStep(newStep);
+            };
+
+            const toggleStamp = (id) => {
+                if (stamps[id]) return;
+                const newStamps = { ...stamps, [id]: true };
+                setStamps(newStamps);
+                saveProgress(newStamps);
+                if (newStamps.swingship && newStamps.splash && newStamps.flume) {
+                    setShowFinalModal(true);
+                }
+            };
+
+            const executeHardReset = () => {
+                localStorage.removeItem(APP_ID);
+                window.location.reload();
+            };
+
+            const handleDownloadImage = async () => {
+                setIsCapturing(true);
+                try {
+                    const canvas = await html2canvas(certificateRef.current, {
+                        scale: 2,
+                        backgroundColor: '#fffdf5',
+                        useCORS: true
+                    });
+                    const dataUrl = canvas.toDataURL('image/png');
+                    setCapturedImage(dataUrl);
+                } catch (err) {
+                    console.error(err);
+                } finally {
+                    setIsCapturing(false);
+                }
+            };
+
+            const allMainRidesDone = stamps.swingship && stamps.splash && stamps.flume;
+
+            if (step === 'intro') return (
+                <div className="mobile-app-container font-ko flex flex-col items-center justify-center p-8 text-center overflow-hidden">
+                    <div className="absolute top-8 left-8 opacity-10 rotate-[-15deg]">
+                        <i data-lucide="compass" style={{width: 80, height: 80}}></i>
+                    </div>
+                    <div className="absolute bottom-12 right-8 opacity-10 rotate-[20deg]">
+                        <i data-lucide="skull" style={{width: 100, height: 100}}></i>
+                    </div>
+                    
+                    <div className="mb-2 float text-[#8b0000] drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                        <i data-lucide="anchor" style={{width: 100, height: 100}}></i>
+                    </div>
+
+                    <PirateLogo />
+
+                    <div className="w-full max-w-[280px] h-[3px] bg-gradient-to-r from-transparent via-[#3d2b1f]/30 to-transparent mb-10 mx-auto"></div>
+
+                    <div className="parchment p-8 rounded-lg mb-12 relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/p6.png')]"></div>
+                        <p className="text-xl leading-relaxed text-[#5d4037] keep-all font-bold italic">
+                            "폭염에 지친 매직 포레스트...<br/>
+                            낭만 해적단이 엄청난 보물을<br/>숨겨두었다!" <br/><br/>
+                            숨겨진 단서를 찾아<br/>보물의 주인이 되어라.
+                        </p>
+                    </div>
+
+                    <div className="w-full space-y-6 px-4 relative z-10">
+                        <div className="p-2 border-2 border-dashed border-[#3d2b1f]/20 rounded-2xl bg-white/20 backdrop-blur-sm">
+                            <input 
+                                type="text" value={nickname} 
+                                onChange={(e)=>setNickname(e.target.value)}
+                                placeholder="모험가 이름을 새기게나" 
+                                className="w-full p-5 rounded-xl border-2 border-[#3d2b1f] bg-white/90 text-center font-bold text-xl outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"
+                            />
+                        </div>
+                        <button 
+                            onClick={() => nickname && saveProgress(stamps, 'map')}
+                            className="wood-btn text-white font-black py-6 px-8 rounded-xl w-full text-2xl"
+                        >
+                            모험 시작하기
+                        </button>
+                    </div>
+                </div>
+            );
+
+            if (step === 'map') return (
+                <div className="mobile-app-container font-ko p-6 pb-12 min-h-screen flex flex-col">
+                    <header className="flex justify-between items-end mb-8 border-b-4 border-double border-[#3d2b1f]/20 pb-4 mt-4">
+                        <div className="flex items-center gap-3">
+                            <div className="bg-[#8b0000] p-2 rounded-lg shadow-md rotate-[-5deg]">
+                                <i data-lucide="compass" className="text-white" style={{width: 24, height: 24}}></i>
+                            </div>
+                            <div>
+                                <p className="text-xs font-en text-[#8b0000] font-bold tracking-widest leading-none mb-1 uppercase">Adventurer</p>
+                                <h2 className="text-2xl font-black text-[#3d2b1f]">{nickname}</h2>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Clues Found</p>
+                            <p className="text-4xl font-en gold-text leading-none">
+                                {Object.values(stamps).filter(v => v).length}<span className="text-xl text-gray-400">/4</span>
+                            </p>
+                        </div>
+                    </header>
+
+                    <div className="parchment p-6 rounded-xl mb-8 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 opacity-5 rotate-12 pointer-events-none">
+                            <i data-lucide="map" style={{width: '100%', height: '100%'}}></i>
+                        </div>
+                        <h3 className="text-xl font-bold mb-2 text-center text-[#3d2b1f] keep-all relative z-10">
+                           숨겨진 표식을 찾아<br/>보물에 가까워져라
+                        </h3>
+                        <p className="text-xs opacity-60 mb-6 text-center keep-all relative z-10 font-bold">각 단서를 터치하여 힌트를 확인하세요</p>
+                        <div className="flex justify-around gap-4 mb-4 relative z-10">
+                            {MISSION_DATA.map(m => (
+                                <div 
+                                    key={m.id} onClick={() => setShowHint(m)}
+                                    className={`relative w-24 h-24 rounded-full flex items-center justify-center text-4xl shadow-xl border-4 transition-all btn-active cursor-pointer ${stamps[m.id] ? 'bg-[#8b0000] border-[#d4af37] scale-105' : 'bg-[#3d2b1f]/10 border-[#3d2b1f]/30 grayscale opacity-60'}`}
+                                >
+                                    {m.icon}
+                                    {stamps[m.id] && (
+                                        <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-1 shadow-lg border-2 border-white">
+                                            <i data-lucide="check" className="text-white" style={{width: 16, height: 16}}></i>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="flex-grow flex flex-col justify-center">
+                        {allMainRidesDone ? (
+                            <div className="p-8 rounded-3xl border-4 border-[#8b0000] bg-white/80 text-center animate-pulse shadow-[0_20px_50px_rgba(139,0,0,0.3)] relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"></div>
+                                <h3 className="text-2xl font-black mb-4 text-[#3d2b1f] keep-all">최종 보물 은닉처 발견!</h3>
+                                <div className="bg-[#fdf5e6] p-5 rounded-2xl border-2 border-dashed border-[#8b0000]/30 mb-6 shadow-inner">
+                                    <p className="text-lg font-bold text-[#8b0000] italic keep-all">
+                                        "무대가 있는 정원 앞에<br/>우리가 보물을 모아두었다네!<br/>어서 가서 찾아보세나!"
+                                    </p>
+                                </div>
+                                {!stamps.finalEvent && (
+                                    <button onClick={()=>setStep('admin')} className="wood-btn text-white font-black py-5 px-8 rounded-2xl w-full text-xl">보물 상자 열기 (스태프 확인)</button>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="p-8 text-center bg-[#3d2b1f]/5 rounded-3xl border-2 border-dashed border-[#3d2b1f]/10">
+                                <i data-lucide="lock" className="mx-auto mb-4 text-[#3d2b1f]/30" style={{width: 48, height: 48}}></i>
+                                <p className="text-base font-bold text-[#3d2b1f]/40 keep-all">3개의 표식을 모두 찾아야<br/>최종 목적지의 위치가 나타납니다.</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {showHint && (
+                        <div className="fixed inset-0 bg-black/90 flex items-center justify-center p-6 z-50 backdrop-blur-md">
+                            <div className="parchment w-full p-10 rounded-2xl text-center shadow-2xl relative border-8 border-double border-[#3d2b1f]/20">
+                                <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full bg-[#fdf5e6] border-4 border-[#3d2b1f]/20 flex items-center justify-center text-5xl shadow-xl">
+                                    {showHint.icon}
+                                </div>
+                                <div className="mt-8">
+                                    <p className="text-xl mb-10 text-[#3d2b1f] font-bold italic keep-all leading-relaxed">"{showHint.hint}"</p>
+                                    <div className="flex flex-col gap-4">
+                                        <button onClick={() => {}} className="wood-btn text-white py-5 rounded-2xl font-black flex items-center justify-center gap-3 text-lg">
+                                            <i data-lucide="camera" style={{width: 24, height: 24}}></i>
+                                            표식 스캔하기
+                                        </button>
+                                        {!stamps[showHint.id] && (
+                                            <button onClick={()=> {toggleStamp(showHint.id); setShowHint(null);}} className="text-[#8b0000] text-xs font-bold underline py-2 opacity-50">
+                                                (시연용) 강제 인증하기
+                                            </button>
+                                        )}
+                                        <button onClick={()=>setShowHint(null)} className="mt-4 text-[#3d2b1f] font-bold text-sm bg-[#3d2b1f]/5 py-4 rounded-xl">지도로 돌아가기</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+
+            if (step === 'admin') return (
+                <div className="mobile-app-container font-ko p-6 flex flex-col items-center justify-center min-h-screen text-center">
+                    <div className="parchment w-full p-10 rounded-2xl shadow-2xl border-8 border-double border-[#3d2b1f]/20">
+                        <div className="mb-6">
+                            <i data-lucide="shield-check" className="mx-auto text-[#8b0000]" style={{width: 60, height: 60}}></i>
+                        </div>
+                        <h2 className="text-3xl font-black mb-4 tracking-widest text-[#3d2b1f] uppercase font-en">Staff Only</h2>
+                        <p className="text-base mb-10 text-[#5d4037] italic font-bold keep-all">카니발 게임 완료 후<br/>스태프에게 확인 코드를 요청하게나.</p>
+                        
+                        <div className="relative mb-10">
+                            <input 
+                                type="number" value={adminCodeInput} 
+                                onChange={(e)=>setAdminCodeInput(e.target.value)} 
+                                placeholder="0000" 
+                                className="w-full text-center p-6 rounded-2xl bg-white/50 border-4 border-[#3d2b1f] font-black text-5xl tracking-[1rem] outline-none shadow-inner text-[#3d2b1f]" 
+                            />
+                        </div>
+
+                        <button 
+                            onClick={() => adminCodeInput === ADMIN_CODE ? setStep('ending') : alert('암호가 틀렸네, 다시 확인해보게!')} 
+                            className="wood-btn text-white font-black py-5 px-8 rounded-2xl w-full text-2xl"
+                        >
+                            금고 열기
+                        </button>
+                        <button onClick={()=>setStep('map')} className="mt-8 text-sm font-bold text-[#3d2b1f]/60 underline block w-full">지도로 돌아가기</button>
+                    </div>
+                </div>
+            );
+
+            if (step === 'ending') return (
+                <div className="mobile-app-container font-ko p-8 flex flex-col items-center justify-center text-center min-h-screen">
+                    <div className="space-y-10 text-xl font-bold keep-all leading-relaxed text-[#3d2b1f]">
+                        <p className="story-line text-2xl font-black" style={{animationDelay:'0.5s'}}>마침내 찾아낸 보물 상자...</p>
+                        <p className="story-line" style={{animationDelay:'2s'}}>하지만 상자 안에는 보물 대신<br/>낡은 편지 한 장이 들어있었다네.</p>
+                        
+                        <div className="parchment p-8 rounded-xl border-l-8 border-[#8b0000] shadow-xl story-line italic text-lg" style={{animationDelay:'4.5s'}}>
+                            <i data-lucide="quote" className="text-[#8b0000]/20 absolute top-4 left-4" style={{width: 40, height: 40}}></i>
+                            "더위에 지친 사람들을 구하기 위해<br/>망설임 없이 나선 그 열정과 용기."
+                        </div>
+
+                        <p className="story-line text-3xl font-en gold-text italic" style={{animationDelay:'7s'}}>"TRUE TREASURE IS IN YOUR HEART"</p>
+                        
+                        <div className="story-line space-y-2" style={{animationDelay:'9s'}}>
+                            <p className="text-4xl text-[#8b0000] font-black">환영하네!</p>
+                            <p className="text-xl">우리 낭만 해적단의 <br/>진정한 일원이 된 것을!</p>
+                        </div>
+
+                        <button 
+                            onClick={()=>setStep('reward')} 
+                            className="wood-btn text-white font-black py-6 px-8 rounded-2xl w-full mt-10 text-2xl story-line" 
+                            style={{animationDelay:'11s'}}
+                        >
+                            임명장 확인하기
+                        </button>
+                    </div>
+                </div>
+            );
+
+            if (step === 'reward') return (
+                <div className="mobile-app-container font-ko p-6 pb-12 flex flex-col items-center min-h-screen">
+                    <div ref={certificateRef} className="relative w-full bg-[#fdf5e6] p-10 border-[16px] border-double border-[#8b0000] shadow-2xl text-center mt-6 overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/old-paper.png')]"></div>
+                        <div className="absolute top-4 left-4 opacity-10 rotate-[-45deg]">
+                            <i data-lucide="anchor" style={{width: 60, height: 60}}></i>
+                        </div>
+                        <div className="absolute bottom-4 right-4 opacity-10 rotate-[15deg]">
+                            <i data-lucide="compass" style={{width: 60, height: 60}}></i>
+                        </div>
+
+                        <h2 className="text-5xl font-en gold-text mb-4 uppercase tracking-tighter">Certificate</h2>
+                        <p className="text-sm font-en text-[#3d2b1f]/60 mb-10 border-b-2 border-[#3d2b1f]/10 pb-4 tracking-[0.3em] font-bold uppercase text-center">Romantic Pirates Official</p>
+                        
+                        <div className="space-y-6 mb-12">
+                            <p className="text-xl mb-4 font-bold leading-loose keep-all text-[#3d2b1f]">위 사람은 보물찾기로 위장된 <br/><span className="font-black text-3xl text-[#8b0000] my-2 inline-block drop-shadow-sm">낭만 해적단</span>의 <br/>입단 테스트를 훌륭히 통과하였기에 <br/>정식 단원으로 임명함.</p>
+                            <div className="relative py-4">
+                                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#3d2b1f]/10"></div></div>
+                                <p className="relative bg-[#fdf5e6] px-4 text-5xl font-black italic font-en text-[#3d2b1f] drop-shadow-sm">"{nickname}"</p>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between items-end">
+                            <div className="text-left">
+                                <p className="text-[10px] font-en text-[#3d2b1f]/40 font-bold tracking-widest uppercase">Issued by</p>
+                                <p className="text-xs font-black text-[#8b0000] uppercase">Captain of Magic Forest</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[10px] font-en text-[#3d2b1f]/40 font-bold tracking-widest uppercase">Date</p>
+                                <p className="text-xs font-black text-[#3d2b1f]">2026 Summer Solstice</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-10 w-full space-y-6 relative z-10">
+                        <div className="parchment border-4 border-[#8b0000]/20 p-8 rounded-3xl text-[#3d2b1f] shadow-xl text-center keep-all relative">
+                            <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#8b0000] text-[#d4af37] px-6 py-2 rounded-full text-sm font-black shadow-lg border-2 border-[#d4af37] uppercase tracking-wider">Loot Unlocked</div>
+                            <p className="text-lg font-bold leading-relaxed mt-4">위의 <span className="text-[#8b0000] font-black underline decoration-[#d4af37] decoration-4">임명장 이미지</span>를<br/>로리 스엠포리움에서 보여주시면<br/>특별한 전리품을 드립니다!</p>
+                            <p className="text-xs text-[#3d2b1f]/50 mt-4 font-bold">(선착순 조기 소진 주의)</p>
+                        </div>
+
+                        <button 
+                            onClick={handleDownloadImage} 
+                            className="wood-btn text-white font-black py-6 px-8 rounded-2xl w-full text-xl flex items-center justify-center gap-3"
+                        >
+                            <i data-lucide="download" style={{width: 24, height: 24}}></i>
+                            {isCapturing ? '인증서 제작 중...' : '임명장 이미지 저장하기'}
+                        </button>
+
+                        <button onClick={()=> {setStep('intro'); window.scrollTo(0,0);}} className="w-full text-base font-bold text-[#3d2b1f]/60 underline mt-4">처음 항해로</button>
+                        
+                        <div className="pt-16 pb-8 flex flex-col items-center">
+                            <button onClick={() => setIsResetConfirmOpen(true)} className="text-[#3d2b1f]/30 text-[10px] font-bold uppercase tracking-widest hover:text-[#8b0000] transition-colors">Clear Mission Data</button>
+                        </div>
+                    </div>
+                    {isResetConfirmOpen && (
+                        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-6 z-[120]">
+                            <div className="bg-white rounded-2xl p-6 w-full max-w-xs text-center shadow-2xl">
+                                <h4 className="text-lg font-black mb-2 text-[#3d2b1f]">데이터 완전 초기화</h4>
+                                <p className="text-sm text-gray-600 mb-6 keep-all leading-relaxed">데모 시연 데이터를 모두 삭제하고<br/>첫 화면으로 돌아가시겠습니까?</p>
+                                <div className="flex gap-2">
+                                    <button onClick={() => setIsResetConfirmOpen(false)} className="flex-1 py-3 rounded-xl bg-gray-100 text-gray-500 font-bold">취소</button>
+                                    <button onClick={executeHardReset} className="flex-1 py-3 rounded-xl bg-[#8b0000] text-white font-bold shadow-md">초기화 실행</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {capturedImage && (
+                        <div className="fixed inset-0 bg-black/95 flex flex-col items-center justify-center p-6 z-[100] text-center" onClick={()=>setCapturedImage(null)}>
+                            <p className="text-white mb-6 font-bold">이미지를 길게 눌러 갤러리에 저장하세요</p>
+                            <img src={capturedImage} className="max-w-full rounded-lg border-4 border-[#8b0000]" />
+                        </div>
+                    )}
+                </div>
+            );
+            return null;
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+        const initIcons = () => { if (window.lucide) { window.lucide.createIcons(); } else { setTimeout(initIcons, 100); } };
+        initIcons();
+    </script>
+</body>
+</html>
