@@ -11,6 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Pirata+One&display=swap');
@@ -99,6 +100,32 @@
             transform: rotate(-10deg);
         }
 
+        .stamp-collected {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            border: 8px solid #8b0000;
+            padding: 10px 30px;
+            color: #8b0000;
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.1);
+            mask-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+        }
+        .stamp-anim {
+            animation: stampDrop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes stampDrop {
+            0% { opacity: 0; transform: translate(-50%, -50%) rotate(-15deg) scale(3); }
+            100% { opacity: 0.8; transform: translate(-50%, -50%) rotate(-15deg) scale(1); }
+        }
+
         @keyframes storyFadeIn {
             0% { opacity: 0; transform: translateY(30px) scale(0.9); }
             100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -143,20 +170,13 @@
                         animate: { opacity: 1, y: 0 },
                         transition: { duration: 0.8, ease: "easeOut" }
                     } : {})}
-                    className="relative w-full flex flex-col items-center mb-12 py-8"
+                    className="relative w-full flex flex-col items-center mb-6 py-4"
                 >
-                    <div className="flex flex-col items-center space-y-1">
-                        <span className="font-en text-[#8b0000] text-xs font-bold tracking-[0.3em] uppercase opacity-80">
-                            Romantic Pirates
-                        </span>
-                        <h1 className="font-ko text-3xl font-black text-[#3d2b1f] tracking-tight text-center keep-all">
-                            낭만 해적단의 보물찾기
-                        </h1>
-                        <div className="w-12 h-1 bg-[#8b0000] rounded-full mt-2"></div>
-                        <p className="font-ko text-[10px] text-[#3d2b1f]/40 font-bold mt-4 tracking-widest uppercase">
-                            롯데월드 어드벤처 부산
-                        </p>
-                    </div>
+                    <img 
+                        src="logo_treasure_nobg.png" 
+                        alt="Romantic Pirates Logo" 
+                        className="w-96 h-auto drop-shadow-2xl"
+                    />
                 </Container>
             );
         };
@@ -165,12 +185,61 @@
             const [step, setStep] = useState('intro');
             const [nickname, setNickname] = useState('');
             const [stamps, setStamps] = useState({ swingship: false, splash: false, flume: false });
+            const [isClaimed, setIsClaimed] = useState(false);
             const [showHint, setShowHint] = useState(null);
             const [adminCodeInput, setAdminCodeInput] = useState("");
             const [isCapturing, setIsCapturing] = useState(false);
             const [capturedImage, setCapturedImage] = useState(null);
             const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
+            const [isScanning, setIsScanning] = useState(false);
+            const [storySkipCount, setStorySkipCount] = useState(0);
+            const [visibleLines, setVisibleLines] = useState(0);
             const certificateRef = useRef(null);
+            const videoRef = useRef(null);
+            const canvasRef = useRef(null);
+            const requestRef = useRef(null);
+
+            const MASTER_QR_DATA = "ROMANTIC_PIRATE_2026";
+
+            const startScanner = () => {
+                setIsScanning(true);
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then((stream) => {
+                    videoRef.current.srcObject = stream;
+                    videoRef.current.setAttribute("playsinline", true);
+                    videoRef.current.play();
+                    requestRef.current = requestAnimationFrame(scanTick);
+                });
+            };
+
+            const stopScanner = () => {
+                setIsScanning(false);
+                if (videoRef.current && videoRef.current.srcObject) {
+                    videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+                }
+                cancelAnimationFrame(requestRef.current);
+            };
+
+            const scanTick = () => {
+                if (videoRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA) {
+                    const canvas = canvasRef.current;
+                    const video = videoRef.current;
+                    canvas.height = video.videoHeight;
+                    canvas.width = video.videoWidth;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                        inversionAttempts: "dontInvert",
+                    });
+
+                    if (code && code.data === MASTER_QR_DATA) {
+                        stopScanner();
+                        saveProgress(stamps, null, true);
+                        return;
+                    }
+                }
+                requestRef.current = requestAnimationFrame(scanTick);
+            };
 
             useEffect(() => {
                 const savedData = localStorage.getItem(APP_ID);
@@ -178,14 +247,20 @@
                     const parsed = JSON.parse(savedData);
                     setNickname(parsed.nickname);
                     setStamps(parsed.stamps);
+                    setIsClaimed(parsed.isClaimed || false);
                     setStep('map');
                 }
             }, []);
 
-            const saveProgress = (newStamps, newStep) => {
-                const data = { nickname, stamps: newStamps || stamps };
+            const saveProgress = (newStamps, newStep, newIsClaimed) => {
+                const data = { 
+                    nickname, 
+                    stamps: newStamps || stamps,
+                    isClaimed: newIsClaimed !== undefined ? newIsClaimed : isClaimed
+                };
                 localStorage.setItem(APP_ID, JSON.stringify(data));
                 if (newStep) setStep(newStep);
+                if (newIsClaimed !== undefined) setIsClaimed(newIsClaimed);
             };
 
             const toggleStamp = (id) => {
@@ -198,23 +273,6 @@
             const executeHardReset = () => {
                 localStorage.removeItem(APP_ID);
                 window.location.reload();
-            };
-
-            const handleDownloadImage = async () => {
-                setIsCapturing(true);
-                try {
-                    const canvas = await html2canvas(certificateRef.current, {
-                        scale: 2,
-                        backgroundColor: '#fdf5e6',
-                        useCORS: true
-                    });
-                    const dataUrl = canvas.toDataURL('image/png');
-                    setCapturedImage(dataUrl);
-                } catch (err) {
-                    console.error(err);
-                } finally {
-                    setIsCapturing(false);
-                }
             };
 
             const allMainRidesDone = stamps.swingship && stamps.splash && stamps.flume;
@@ -381,27 +439,30 @@
             );
 
             if (step === 'ending') return (
-                <div className="mobile-app-container font-ko p-8 flex flex-col items-center justify-center text-center min-h-screen">
-                    <div className="real-parchment p-10 space-y-10 text-xl font-bold keep-all leading-relaxed text-[#3d2b1f] w-full">
-                        <p className="story-line text-2xl font-black" style={{animationDelay:'0.5s'}}>마침내 찾아낸 보물 상자...</p>
-                        <p className="story-line" style={{animationDelay:'2s'}}>하지만 상자 안에는 보물 대신<br/>낡은 편지 한 장이 들어있었다네.</p>
+                <div 
+                    className="mobile-app-container font-ko p-8 flex flex-col items-center justify-center text-center min-h-screen cursor-pointer"
+                    onClick={() => setVisibleLines(prev => prev + 1)}
+                >
+                    <div className="real-parchment p-10 space-y-10 text-xl font-bold keep-all leading-relaxed text-[#3d2b1f] w-full relative">
+                        <p className="story-line text-2xl font-black" style={visibleLines >= 1 ? {opacity:1, animation:'none'} : {animationDelay:'0.5s'}}>마침내 찾아낸 보물 상자...</p>
+                        <p className="story-line" style={visibleLines >= 2 ? {opacity:1, animation:'none'} : {animationDelay:'2s'}}>하지만 상자 안에는 보물 대신<br/>낡은 편지 한 장이 들어있었다네.</p>
                         
-                        <div className="p-8 rounded-xl border-l-8 border-[#8b0000] shadow-md story-line italic text-lg bg-white/30" style={{animationDelay:'4.5s'}}>
+                        <div className="p-8 rounded-xl border-l-8 border-[#8b0000] shadow-md story-line italic text-lg bg-white/30" style={visibleLines >= 3 ? {opacity:1, animation:'none'} : {animationDelay:'4.5s'}}>
                             <i data-lucide="quote" className="text-[#8b0000]/20 absolute top-4 left-4" style={{width: 40, height: 40}}></i>
                             "더위에 지친 사람들을 구하기 위해<br/>망설임 없이 나선 그 열정과 용기."
                         </div>
 
-                        <p className="story-line text-2xl gold-text italic font-black" style={{animationDelay:'7s'}}>진정한 보물은 그대의 마음속에 있네</p>
+                        <p className="story-line text-2xl gold-text italic font-black" style={visibleLines >= 4 ? {opacity:1, animation:'none'} : {animationDelay:'7s'}}>진정한 보물은 그대의 마음속에 있네</p>
                         
-                        <div className="story-line space-y-2" style={{animationDelay:'9s'}}>
+                        <div className="story-line space-y-2" style={visibleLines >= 5 ? {opacity:1, animation:'none'} : {animationDelay:'9s'}}>
                             <p className="text-4xl text-[#8b0000] font-black">환영하네!</p>
                             <p className="text-xl">우리 낭만 해적단의 <br/>진정한 일원이 된 것을!</p>
                         </div>
 
                         <button 
-                            onClick={()=>setStep('reward')} 
+                            onClick={(e)=>{e.stopPropagation(); setStep('reward');}} 
                             className="wood-btn text-white font-black py-6 px-8 rounded-2xl w-full mt-10 text-2xl story-line" 
-                            style={{animationDelay:'11s'}}
+                            style={visibleLines >= 6 ? {opacity:1, animation:'none'} : {animationDelay:'11s'}}
                         >
                             임명장 확인하기
                         </button>
@@ -412,53 +473,105 @@
             if (step === 'reward') return (
                 <div className="mobile-app-container font-ko p-6 pb-12 flex flex-col items-center min-h-screen">
                     <div ref={certificateRef} className="relative w-full bg-[#fdf5e6] p-10 border-[16px] border-double border-[#8b0000] shadow-2xl text-center mt-6 overflow-hidden">
-                        <div className="absolute top-4 left-4 opacity-10 rotate-[-45deg]">
-                            <i data-lucide="anchor" style={{width: 60, height: 60}}></i>
+                        {/* 배경 이미지 추가 */}
+                        <div className="absolute inset-0 z-0 flex items-center justify-center opacity-[0.15]">
+                            <img src="image_nobg.png" className="w-full h-auto object-contain scale-125" />
                         </div>
-                        <div className="absolute bottom-4 right-4 opacity-10 rotate-[15deg]">
-                            <i data-lucide="compass" style={{width: 60, height: 60}}></i>
-                        </div>
-
-                        <h2 className="text-5xl font-en gold-text mb-4 uppercase tracking-tighter">Certificate</h2>
-                        <p className="text-sm font-bold text-[#3d2b1f]/60 mb-10 border-b-2 border-[#3d2b1f]/10 pb-4 tracking-[0.3em] uppercase text-center">낭만 해적단 공식 증명서</p>
                         
-                        <div className="space-y-6 mb-12">
-                            <p className="text-xl mb-4 font-bold leading-loose keep-all text-[#3d2b1f]">위 사람은 보물찾기로 위장된 <br/><span className="font-black text-3xl text-[#8b0000] my-2 inline-block drop-shadow-sm">낭만 해적단</span>의 <br/>입단 테스트를 훌륭히 통과하였기에 <br/>정식 단원으로 임명함.</p>
-                            <div className="relative py-4">
-                                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#3d2b1f]/10"></div></div>
-                                <p className="relative bg-[#fdf5e6] px-4 text-5xl font-black italic text-[#3d2b1f]">"{nickname}"</p>
+                        <div className="relative z-10">
+                            <div className="absolute top-0 left-0 opacity-10 rotate-[-45deg]">
+                                <i data-lucide="anchor" style={{width: 60, height: 60}}></i>
+                            </div>
+                            <div className="absolute bottom-0 right-0 opacity-10 rotate-[15deg]">
+                                <i data-lucide="compass" style={{width: 60, height: 60}}></i>
+                            </div>
+
+                            <h2 className="text-5xl font-en gold-text mb-4 uppercase tracking-tighter">Certificate</h2>
+                            <p className="text-sm font-bold text-[#3d2b1f]/60 mb-10 border-b-2 border-[#3d2b1f]/10 pb-4 tracking-[0.3em] uppercase text-center">낭만 해적단 공식 증명서</p>
+                            
+                            <div className="space-y-6 mb-12">
+                                <p className="text-xl mb-4 font-bold leading-loose keep-all text-[#3d2b1f]">위 사람은 보물찾기로 위장된 <br/><span className="font-black text-3xl text-[#8b0000] my-2 inline-block drop-shadow-sm">낭만 해적단</span>의 <br/>입단 테스트를 훌륭히 통과하였기에 <br/>정식 단원으로 임명함.</p>
+                                <div className="relative py-4">
+                                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#3d2b1f]/10"></div></div>
+                                    <p className="relative bg-[#fdf5e6]/80 px-4 text-5xl font-black italic text-[#3d2b1f]">"{nickname}"</p>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-center items-end border-t border-[#3d2b1f]/10 pt-4">
+                                <div className="text-center">
+                                    <p className="text-[10px] font-bold text-[#3d2b1f]/40 tracking-widest uppercase mb-1">임명 날짜</p>
+                                    <p className="text-sm font-black text-[#3d2b1f]">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="flex justify-between items-end">
-                            <div className="text-left">
-                                <p className="text-[10px] font-bold text-[#3d2b1f]/40 tracking-widest uppercase">발행인</p>
-                                <p className="text-xs font-black text-[#8b0000] uppercase">매직 포레스트 선장</p>
+                        {/* 수령 완료 도장 */}
+                        {isClaimed && (
+                            <div className="stamp-collected stamp-anim">
+                                COLLECTED
                             </div>
-                            <div className="text-right">
-                                <p className="text-[10px] font-bold text-[#3d2b1f]/40 tracking-widest uppercase">날짜</p>
-                                <p className="text-xs font-black text-[#3d2b1f]">2026년 낭만 가득한 여름</p>
-                            </div>
-                        </div>
+                        )}
                     </div>
 
                     <div className="mt-10 w-full space-y-6 relative z-10">
-                        <div className="parchment border-4 border-[#8b0000]/20 p-8 rounded-3xl text-[#3d2b1f] shadow-xl text-center keep-all relative">
-                            <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#8b0000] text-[#d4af37] px-6 py-2 rounded-full text-sm font-black shadow-lg border-2 border-[#d4af37] uppercase tracking-wider">보상 잠금 해제</div>
-                            <p className="text-lg font-bold leading-relaxed mt-4">위의 <span className="text-[#8b0000] font-black underline decoration-[#d4af37] decoration-4">임명장 이미지</span>를<br/>해적 단원에게 보여주시면<br/>낭만 해적단원의 무기를 지급해드립니다!</p>
-                            <p className="text-xs text-[#3d2b1f]/50 mt-4 font-bold">(선착순 조기 소진될 수 있습니다)</p>
-                        </div>
+                        {!isClaimed ? (
+                            <div className="parchment border-4 border-[#8b0000]/20 p-8 rounded-3xl text-[#3d2b1f] shadow-xl text-center keep-all relative">
+                                <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#8b0000] text-[#d4af37] px-6 py-2 rounded-full text-sm font-black shadow-lg border-2 border-[#d4af37] uppercase tracking-wider">보상 수령 방법</div>
+                                <p className="text-lg font-bold leading-relaxed mt-4">현재 화면의 <span className="text-[#8b0000] font-black underline decoration-[#d4af37] decoration-4">디지털 임명장</span>을<br/>해적 단원(스태프)에게 보여주세요.<br/>확인 후 낭만 해적의 무기를 드립니다!</p>
+                                <p className="text-xs text-[#3d2b1f]/50 mt-4 font-bold">(화면 캡처본은 수령이 불가합니다)</p>
+                                
+                                <button 
+                                    onClick={startScanner} 
+                                    className="mt-6 w-full py-4 bg-[#3d2b1f] text-white rounded-xl font-bold text-base shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2"
+                                >
+                                    <i data-lucide="qr-code" style={{width: 20, height: 20}}></i>
+                                    스태프 QR 스캔하여 수령 확인
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="bg-[#8b0000]/5 border-4 border-dashed border-[#8b0000]/20 p-8 rounded-3xl text-[#8b0000] shadow-inner text-center keep-all">
+                                <i data-lucide="check-circle" className="mx-auto mb-2" style={{width: 32, height: 32}}></i>
+                                <p className="text-xl font-black mb-1">보상 수령 완료</p>
+                                <p className="text-sm font-bold opacity-70">이 임명장으로는 더 이상<br/>보상을 수령하실 수 없습니다.</p>
+                            </div>
+                        )}
 
-                        <button onClick={handleDownloadImage} className="wood-btn text-white font-black py-6 px-8 rounded-2xl w-full text-xl flex items-center justify-center gap-3">
-                            <i data-lucide="download" style={{width: 24, height: 24}}></i>
-                            {isCapturing ? '제작 중...' : '임명장 이미지 저장하기'}
-                        </button>
                         <button onClick={()=> {setStep('intro'); window.scrollTo(0,0);}} className="w-full text-base font-bold text-[#3d2b1f]/60 underline mt-4">처음 화면으로</button>
                         
                         <div className="pt-16 pb-8 flex flex-col items-center">
                             <button onClick={() => setIsResetConfirmOpen(true)} className="text-[#3d2b1f]/30 text-[10px] font-bold uppercase tracking-widest hover:text-[#8b0000] transition-colors">데이터 초기화 (시연용)</button>
                         </div>
                     </div>
+
+                    {isScanning && (
+                        <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center p-6 z-[200]">
+                            <div className="w-full max-w-sm aspect-square bg-black rounded-3xl overflow-hidden relative border-4 border-[#d4af37]">
+                                <video ref={videoRef} className="w-full h-full object-cover" />
+                                <canvas ref={canvasRef} className="hidden" />
+                                <div className="absolute inset-0 border-[40px] border-black/40"></div>
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-[#d4af37] rounded-2xl animate-pulse"></div>
+                            </div>
+                            <p className="text-white mt-8 text-lg font-bold text-center keep-all">스태프가 제시하는<br/><span className="text-[#d4af37]">마스터 QR 코드</span>를 인식시켜주세요</p>
+                            
+                            {/* 시연용 우회 버튼 */}
+                            <button 
+                                onClick={() => {
+                                    stopScanner();
+                                    saveProgress(stamps, null, true);
+                                }}
+                                className="mt-4 text-[#d4af37]/40 text-[10px] font-bold uppercase tracking-widest hover:text-[#d4af37] transition-colors"
+                            >
+                                (시연용) 강제 수령 확인
+                            </button>
+
+                            <button 
+                                onClick={stopScanner}
+                                className="mt-8 px-8 py-3 bg-white/10 text-white rounded-full font-bold border border-white/20 text-sm"
+                            >
+                                취소하기
+                            </button>
+                        </div>
+                    )}
 
                     {isResetConfirmOpen && (
                         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-6 z-[120]">
@@ -470,13 +583,6 @@
                                     <button onClick={executeHardReset} className="flex-1 py-3 rounded-xl bg-[#8b0000] text-white font-bold shadow-md">초기화 실행</button>
                                 </div>
                             </div>
-                        </div>
-                    )}
-
-                    {capturedImage && (
-                        <div className="fixed inset-0 bg-black/95 flex flex-col items-center justify-center p-6 z-[100] text-center" onClick={()=>setCapturedImage(null)}>
-                            <p className="text-white mb-6 font-bold">이미지를 길게 눌러 갤러리에 저장하세요</p>
-                            <img src={capturedImage} className="max-w-full rounded-lg border-4 border-[#8b0000]" />
                         </div>
                     )}
                 </div>
