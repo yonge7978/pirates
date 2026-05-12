@@ -39,6 +39,21 @@
             background-image: url("https://www.transparenttextures.com/patterns/old-paper.png");
             border: 2px solid #d4af37;
             box-shadow: 5px 5px 15px rgba(0,0,0,0.2), inset 0 0 50px rgba(139,69,19,0.1);
+            border-radius: 8px;
+        }
+
+        .parchment-main {
+            background-image: url("parchment.png");
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 4rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
         }
 
         .real-parchment {
@@ -292,8 +307,7 @@
 
                     <PirateLogo />
 
-                    <div className="parchment p-8 rounded-lg mb-12 relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/p6.png')]"></div>
+                    <div className="parchment-main p-10 mb-12 relative">
                         <p className="text-xl leading-relaxed text-[#5d4037] keep-all font-bold italic">
                             "폭염에 지친 매직 포레스트...<br/>
                             낭만 해적단이 엄청난 보물을<br/>숨겨두었다!" <br/><br/>
