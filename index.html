@@ -215,8 +215,11 @@
             const requestRef = useRef(null);
 
             const MASTER_QR_DATA = "ROMANTIC_PIRATE_2026";
+            const CHEST_QR_DATA = "OPEN_TREASURE_CHEST_2026";
+            const scanModeRef = useRef(null);
 
-            const startScanner = () => {
+            const startScanner = (mode) => {
+                scanModeRef.current = mode;
                 setIsScanning(true);
                 navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then((stream) => {
                     videoRef.current.srcObject = stream;
@@ -247,10 +250,16 @@
                         inversionAttempts: "dontInvert",
                     });
 
-                    if (code && code.data === MASTER_QR_DATA) {
-                        stopScanner();
-                        saveProgress(stamps, null, true);
-                        return;
+                    if (code) {
+                        if (scanModeRef.current === 'chest' && code.data === CHEST_QR_DATA) {
+                            stopScanner();
+                            setStep('ending');
+                            return;
+                        } else if (scanModeRef.current === 'reward' && code.data === MASTER_QR_DATA) {
+                            stopScanner();
+                            saveProgress(stamps, null, true);
+                            return;
+                        }
                     }
                 }
                 requestRef.current = requestAnimationFrame(scanTick);
@@ -379,13 +388,13 @@
                     <div className="flex-grow flex flex-col justify-center">
                         {allMainRidesDone ? (
                             <div className="p-8 rounded-3xl border-4 border-[#8b0000] bg-white/80 text-center animate-pulse shadow-[0_20px_50px_rgba(139,0,0,0.3)] relative overflow-hidden">
-                                <h3 className="text-2xl font-black mb-4 text-[#3d2b1f] keep-all">최종 보물 은닉처 발견!</h3>
+                                <h3 className="text-2xl font-black mb-4 text-[#3d2b1f] keep-all">보물 은닉처 발견!</h3>
                                 <div className="bg-[#fdf5e6] p-5 rounded-2xl border-2 border-dashed border-[#8b0000]/30 mb-6 shadow-inner">
                                     <p className="text-lg font-bold text-[#8b0000] italic keep-all">
-                                        "무대가 있는 정원 앞에<br/>우리가 보물을 모아두었다네!<br/>어서 가서 찾아보세나!"
+                                        "무대가 있는 정원 앞에<br/>우리 단원들의 훈련장 한 가운데<br/>보물상자를 찾아보게나!"
                                     </p>
                                 </div>
-                                <button onClick={()=>setStep('admin')} className="wood-btn text-white font-black py-5 px-8 rounded-2xl w-full text-xl">보물 상자 열기 (스태프 확인)</button>
+                                <button onClick={()=>setStep('admin')} className="wood-btn text-white font-black py-5 px-8 rounded-2xl w-full text-xl">보물 상자 열기(QR코드 인식)</button>
                             </div>
                         ) : (
                             <div className="p-8 text-center bg-[#3d2b1f]/5 rounded-3xl border-2 border-dashed border-[#3d2b1f]/10">
@@ -439,30 +448,56 @@
 
             if (step === 'admin') return (
                 <div className="mobile-app-container font-ko p-6 flex flex-col items-center justify-center min-h-screen text-center">
-                    <div className="parchment w-full p-10 rounded-2xl shadow-2xl border-8 border-double border-[#3d2b1f]/20">
+                    <div className="parchment w-full p-10 rounded-2xl shadow-2xl border-8 border-double border-[#3d2b1f]/20 relative">
                         <div className="mb-6">
-                            <i data-lucide="shield-check" className="mx-auto text-[#8b0000]" style={{width: 60, height: 60}}></i>
+                            <i data-lucide="scan" className="mx-auto text-[#8b0000]" style={{width: 60, height: 60}}></i>
                         </div>
-                        <h2 className="text-3xl font-black mb-4 tracking-widest text-[#3d2b1f] uppercase">스태프 확인</h2>
-                        <p className="text-base mb-10 text-[#5d4037] italic font-bold keep-all">카니발 게임 완료 후<br/>스태프에게 확인 코드를 요청하게나.</p>
-                        
-                        <div className="relative mb-10">
-                            <input 
-                                type="number" value={adminCodeInput} 
-                                onChange={(e)=>setAdminCodeInput(e.target.value)} 
-                                placeholder="0000" 
-                                className="w-full text-center p-6 rounded-2xl bg-white/50 border-4 border-[#3d2b1f] font-black text-5xl tracking-[1rem] outline-none shadow-inner text-[#3d2b1f]" 
-                            />
-                        </div>
+                        <h2 className="text-3xl font-black mb-4 tracking-widest text-[#3d2b1f] uppercase">QR코드 인식</h2>
+                        <p className="text-base mb-10 text-[#5d4037] italic font-bold keep-all">보물 상자를 열기 위해<br/>근처에 있는 QR코드를 인식하게나.</p>
 
                         <button 
-                            onClick={() => adminCodeInput === ADMIN_CODE ? setStep('ending') : alert('암호가 틀렸네, 다시 확인해보게!')} 
-                            className="wood-btn text-white font-black py-5 px-8 rounded-2xl w-full text-2xl"
+                            onClick={() => startScanner('chest')} 
+                            className="wood-btn text-white font-black py-5 px-8 rounded-2xl w-full text-xl flex items-center justify-center gap-3"
                         >
-                            보물 상자 열기
+                            <i data-lucide="qr-code" style={{width: 24, height: 24}}></i>
+                            QR 카메라 켜기
                         </button>
+                        
+                        {/* 시연용 우회 버튼 (투명하게 숨김) */}
+                        <div className="absolute bottom-4 right-4 w-10 h-10 opacity-0 z-50 cursor-pointer" onClick={() => setStep('ending')}></div>
+
                         <button onClick={()=>setStep('map')} className="mt-8 text-sm font-bold text-[#3d2b1f]/60 underline block w-full">지도로 돌아가기</button>
                     </div>
+
+                    {isScanning && (
+                        <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center p-6 z-[200]">
+                            <div className="w-full max-w-sm aspect-square bg-black rounded-3xl overflow-hidden relative border-4 border-[#d4af37]">
+                                <video ref={videoRef} className="w-full h-full object-cover" />
+                                <canvas ref={canvasRef} className="hidden" />
+                                <div className="absolute inset-0 border-[40px] border-black/40"></div>
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-[#d4af37] rounded-2xl animate-pulse"></div>
+                            </div>
+                            <p className="text-white mt-8 text-lg font-bold text-center keep-all">보물 상자의<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</p>
+                            
+                            {/* 시연용 우회 버튼 */}
+                            <button 
+                                onClick={() => {
+                                    stopScanner();
+                                    setStep('ending');
+                                }}
+                                className="mt-4 text-[#d4af37]/40 text-[10px] font-bold uppercase tracking-widest hover:text-[#d4af37] transition-colors"
+                            >
+                                (시연용) 강제 상자 열기
+                            </button>
+
+                            <button 
+                                onClick={stopScanner}
+                                className="mt-8 px-8 py-3 bg-white/10 text-white rounded-full font-bold border border-white/20 text-sm"
+                            >
+                                취소하기
+                            </button>
+                        </div>
+                    )}
                 </div>
             );
 
@@ -549,7 +584,7 @@
                                 <p className="text-xs text-[#3d2b1f]/50 mt-4 font-bold">(화면 캡처본은 수령이 불가합니다)</p>
                                 
                                 <button 
-                                    onClick={startScanner} 
+                                    onClick={() => startScanner('reward')} 
                                     className="mt-6 w-full py-4 bg-[#3d2b1f] text-white rounded-xl font-bold text-base shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2"
                                 >
                                     <i data-lucide="qr-code" style={{width: 20, height: 20}}></i>
