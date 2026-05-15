@@ -170,8 +170,8 @@
         const ADMIN_CODE = "7777";
 
         const MISSION_DATA = [
-            { id: 'swingship', icon: '⚓', label: '첫 번째 표식', hint: '우리가 타고 온 배에 내리자마자 표시해뒀지' },
-            { id: 'splash', icon: '🌊', label: '두 번째 표식', hint: '크라켄을 여기서 다시 마주할 줄이야! 하지만 낭만 해적단한테는 안 된다 이 말이야!' },
+            { id: 'swingship', icon: '⚓', label: '첫 번째 표식', hint: '우리가 타고 온 배 어때?\n너도 한번 타볼래? 더위가 아주 싹 가실거야!' },
+            { id: 'splash', icon: '🌊', label: '두 번째 표식', hint: '땀에 젖은 그대여!\n이 참에 아예 물에 홀딱 젖어버리는 것이 어떤가?' },
             { id: 'flume', icon: '🛶', label: '세 번째 표식', hint: '오거들이 만든 뗏목도 꽤 훌륭하더군.. 물론 우리 낭만 해적단의 배에 비할 수 없지만 말이야' },
         ];
 
@@ -356,7 +356,7 @@
 
                     <div className="parchment p-6 rounded-xl mb-8 relative overflow-hidden">
                         <h3 className="text-xl font-bold mb-2 text-center text-[#3d2b1f] keep-all relative z-10">
-                           숨겨진 표식을 찾아<br/>보물에 가까워져라
+                           파크 안 숨겨진 표식을 찾아<br/>보물에 더 가까워져라!
                         </h3>
                         <p className="text-xs opacity-60 mb-6 text-center keep-all relative z-10 font-bold">각 단서를 터치하여 힌트를 확인하세요</p>
                         <div className="flex justify-around gap-2 mb-4 relative z-10">
@@ -405,10 +405,24 @@
                                     <h4 className="text-lg font-black mb-2 text-[#8b0000]">{showHint.label}</h4>
                                     <p className="text-xl mb-10 text-[#3d2b1f] font-bold italic keep-all leading-relaxed">"{showHint.hint}"</p>
                                     <div className="flex flex-col gap-4">
-                                        <button className="wood-btn text-white py-5 rounded-2xl font-black flex items-center justify-center gap-3 text-lg">
+                                        <label className="wood-btn text-white py-5 rounded-2xl font-black flex items-center justify-center gap-3 text-lg cursor-pointer">
                                             <i data-lucide="camera" style={{width: 24, height: 24}}></i>
                                             표식 인식하기
-                                        </button>
+                                            <input 
+                                                type="file" 
+                                                accept="image/*" 
+                                                capture="environment" 
+                                                className="hidden" 
+                                                onChange={(e) => {
+                                                    if (e.target.files && e.target.files[0]) {
+                                                        // 시연을 위해 파일 선택 시 바로 인증되도록 처리
+                                                        toggleStamp(showHint.id);
+                                                        setShowHint(null);
+                                                        alert("표식이 성공적으로 인식되었습니다!");
+                                                    }
+                                                }}
+                                            />
+                                        </label>
                                         {!stamps[showHint.id] && (
                                             <button onClick={()=> {toggleStamp(showHint.id); setShowHint(null);}} className="text-[#8b0000] text-xs font-bold underline py-2 opacity-50">
                                                 (시연용) 강제 인증하기
