@@ -4,11 +4,13 @@ def make_parchment_transparent_and_crop(input_path, output_path):
     img = Image.open(input_path).convert("RGBA")
     width, height = img.size
     
-    # Floodfill from corners to make the outer white area transparent
-    ImageDraw.floodfill(img, (0, 0), (0, 0, 0, 0), thresh=35)
-    ImageDraw.floodfill(img, (width - 1, 0), (0, 0, 0, 0), thresh=35)
-    ImageDraw.floodfill(img, (0, height - 1), (0, 0, 0, 0), thresh=35)
-    ImageDraw.floodfill(img, (width - 1, height - 1), (0, 0, 0, 0), thresh=35)
+    # Floodfill from corners to make the outer white area and soft shadow transparent.
+    # We use a high threshold of 90 to completely clean the soft gray shadow in the image,
+    # stopping at the dark burnt deckled paper edges.
+    ImageDraw.floodfill(img, (0, 0), (0, 0, 0, 0), thresh=90)
+    ImageDraw.floodfill(img, (width - 1, 0), (0, 0, 0, 0), thresh=90)
+    ImageDraw.floodfill(img, (0, height - 1), (0, 0, 0, 0), thresh=90)
+    ImageDraw.floodfill(img, (width - 1, height - 1), (0, 0, 0, 0), thresh=90)
     
     # Find the bounding box of non-transparent pixels (alpha > 0)
     bbox = img.getbbox()
