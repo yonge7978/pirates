@@ -4,7 +4,7 @@ node_modules/
 # Screenshots & Debug outputs
 *.png
 !stamp_*.png
-!letter_parchment.png
+!letter_parchment_light.png
 debug.js
 walkthrough.js
 screenshot.js
