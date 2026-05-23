@@ -416,7 +416,7 @@
 
                     <div className="flex-grow flex flex-col justify-center">
                         {allMainRidesDone ? (
-                            <div className="p-8 rounded-3xl border-4 border-[#8b0000] bg-white/80 text-center animate-pulse shadow-[0_20px_50px_rgba(139,0,0,0.3)] relative overflow-hidden">
+                            <div key="treasure-hideout" className="p-8 rounded-3xl border-4 border-[#8b0000] bg-white/80 text-center animate-pulse shadow-[0_20px_50px_rgba(139,0,0,0.3)] relative overflow-hidden">
                                 <h3 className="text-2xl font-black mb-4 text-[#3d2b1f] keep-all">보물 은닉처 발견!</h3>
                                 <div className="bg-[#fdf5e6] p-5 rounded-2xl border-2 border-dashed border-[#8b0000]/30 mb-6 shadow-inner">
                                     <p className="text-lg font-bold text-[#8b0000] italic keep-all">
@@ -426,7 +426,7 @@
                                 <button onClick={()=>setStep('admin')} className="wood-btn text-white font-black py-5 px-8 rounded-2xl w-full text-xl">보물 상자 열기(QR코드 인식)</button>
                             </div>
                         ) : (
-                            <div className="p-8 text-center bg-[#3d2b1f]/5 rounded-3xl border-2 border-dashed border-[#3d2b1f]/10">
+                            <div key="locked-map-info" className="p-8 text-center bg-[#3d2b1f]/5 rounded-3xl border-2 border-dashed border-[#3d2b1f]/10">
                                 <i data-lucide="lock" className="mx-auto mb-4 text-[#3d2b1f]/30" style={{width: 48, height: 48}}></i>
                                 <p className="text-base font-bold text-[#3d2b1f]/40 keep-all">3개의 표식을 모두 찾아야<br/>최종 목적지의 위치가 나타납니다.</p>
                             </div>
@@ -660,7 +660,7 @@
 
                     <div className="mt-10 w-full space-y-6 relative z-10">
                         {!isClaimed ? (
-                            <div className="parchment border-4 border-[#8b0000]/20 p-8 rounded-3xl text-[#3d2b1f] shadow-xl text-center keep-all relative">
+                            <div key="claim-reward-form" className="parchment border-4 border-[#8b0000]/20 p-8 rounded-3xl text-[#3d2b1f] shadow-xl text-center keep-all relative">
                                 <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#8b0000] text-[#d4af37] px-6 py-2 rounded-full text-sm font-black shadow-lg border-2 border-[#d4af37] uppercase tracking-wider">보상을 수령하세요</div>
                                 <p className="text-lg font-bold leading-relaxed mt-4">현재 화면의 임명장을 <br/>무기고의 해적 단원(캐스트)에게 보여주시면<br/>낭만 해적단원의 무기를 지급해 드립니다!</p>
                                 <p className="text-xs text-[#3d2b1f]/50 mt-4 font-bold">(중복 수령은 불가합니다)</p>
@@ -674,7 +674,7 @@
                                 </button>
                             </div>
                         ) : (
-                            <div className="bg-[#8b0000]/5 border-4 border-dashed border-[#8b0000]/20 p-8 rounded-3xl text-[#8b0000] shadow-inner text-center keep-all">
+                            <div key="reward-claimed-status" className="bg-[#8b0000]/5 border-4 border-dashed border-[#8b0000]/20 p-8 rounded-3xl text-[#8b0000] shadow-inner text-center keep-all">
                                 <i data-lucide="check-circle" className="mx-auto mb-2" style={{width: 32, height: 32}}></i>
                                 <p className="text-xl font-black mb-1">보상 수령 완료</p>
                                 <p className="text-sm font-bold opacity-70">이 임명장으로는 더 이상<br/>보상을 수령하실 수 없습니다.</p>
