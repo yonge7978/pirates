@@ -15,6 +15,6 @@ def make_parchment_transparent(input_path, output_path):
 
 if __name__ == "__main__":
     make_parchment_transparent(
-        "/Users/yong/.gemini/antigravity-cli/brain/94239e22-cba2-4161-b34b-e5c9b39ae674/letter_parchment_1779506308977.png",
+        "/Users/yong/.gemini/antigravity-cli/brain/94239e22-cba2-4161-b34b-e5c9b39ae674/letter_parchment_light_1779528794491.png",
         "/Users/yong/workspace/pirates/letter_parchment.png"
     )
