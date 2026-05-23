@@ -156,6 +156,28 @@
 
         .keep-all { word-break: keep-all; }
         .btn-active:active { transform: scale(0.95); transition: transform 0.1s; }
+
+        @keyframes stampOverlayDrop {
+            0% { opacity: 0; transform: scale(4) rotate(20deg); filter: blur(4px); }
+            60% { opacity: 1; transform: scale(0.9) rotate(-8deg); filter: none; }
+            100% { opacity: 1; transform: scale(1) rotate(-10deg); }
+        }
+        .animate-stamp-drop {
+            animation: stampOverlayDrop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.25) forwards;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            10%, 90% { transform: translate(-3px, 2px); }
+            20%, 80% { transform: translate(3px, -2px); }
+            30%, 70% { transform: translate(-3px, -1px); }
+            40%, 60% { transform: translate(3px, 2px); }
+            50% { transform: translate(-1px, -2px); }
+        }
+        .animate-shake {
+            animation: shake 0.3s ease-in-out;
+            animation-delay: 0.15s;
+        }
     </style>
 </head>
 <body>
@@ -170,9 +192,9 @@
         const ADMIN_CODE = "7777";
 
         const MISSION_DATA = [
-            { id: 'swingship', icon: '⚓', label: '첫 번째 표식', hint: '우리가 타고 온 배 어때?\n너도 한번 타볼래? 더위가 아주 싹 가실거야!' },
-            { id: 'splash', icon: '🌊', label: '두 번째 표식', hint: '땀에 젖은 그대여!\n이 참에 아예 물에 홀딱 젖어버리는 것이 어떤가?' },
-            { id: 'flume', icon: '🛶', label: '세 번째 표식', hint: '오거들이 만든 뗏목도 꽤 훌륭하더군.. 물론 우리 낭만 해적단의 배에 비할 수 없지만 말이야' },
+            { id: 'swingship', icon: '⚓', image: 'stamp_swingship.png', label: '첫 번째 표식', attraction: '파이러츠 스윙십', hint: '우리가 타고 온 배 어때?\n너도 한번 타볼래? 더위가 아주 싹 가실거야!' },
+            { id: 'splash', icon: '🌊', image: 'stamp_splash.png', label: '두 번째 표식', attraction: '자이언트 스플래쉬', hint: '땀에 젖은 그대여!\n이 참에 아예 물에 홀딱 젖어버리는 것이 어떤가?' },
+            { id: 'flume', icon: '🛶', image: 'stamp_flume.png', label: '세 번째 표식', attraction: "오거스 후룸 (Ogres' Flume)", hint: '오거들이 만든 뗏목도 꽤 훌륭하더군.. 물론 우리 낭만 해적단의 배에 비할 수 없지만 말이야' },
         ];
 
         const PirateLogo = () => {
@@ -209,6 +231,7 @@
             const [isScanning, setIsScanning] = useState(false);
             const [storySkipCount, setStorySkipCount] = useState(0);
             const [visibleLines, setVisibleLines] = useState(0);
+            const [newlyUnlockedStamp, setNewlyUnlockedStamp] = useState(null);
             const certificateRef = useRef(null);
             const videoRef = useRef(null);
             const canvasRef = useRef(null);
@@ -294,6 +317,13 @@
                 saveProgress(newStamps);
             };
 
+            const unlockStamp = (id) => {
+                if (stamps[id]) return;
+                toggleStamp(id);
+                setShowHint(null);
+                setNewlyUnlockedStamp(id);
+            };
+
             const executeHardReset = () => {
                 localStorage.removeItem(APP_ID);
                 window.location.reload();
@@ -371,12 +401,11 @@
                         <div className="flex justify-around gap-2 mb-4 relative z-10">
                             {MISSION_DATA.map(m => (
                                 <div key={m.id} onClick={() => setShowHint(m)} className="flex flex-col items-center gap-2">
-                                    <div className={`stamp-circle transition-all btn-active cursor-pointer ${stamps[m.id] ? 'border-[#8b0000] scale-105' : 'border-[#3d2b1f]/20 grayscale opacity-40'}`}>
-                                        <span className="stamp-ink">{m.icon}</span>
-                                        {stamps[m.id] && (
-                                            <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-1 shadow-lg border-2 border-white">
-                                                <i data-lucide="check" className="text-white" style={{width: 16, height: 16}}></i>
-                                            </div>
+                                    <div className={`stamp-circle transition-all btn-active cursor-pointer overflow-hidden ${stamps[m.id] ? 'border-[#8b0000] scale-105' : 'border-[#3d2b1f]/20 grayscale opacity-40'}`}>
+                                        {m.image ? (
+                                            <img src={m.image} className="w-full h-full object-contain p-1" alt={m.label} />
+                                        ) : (
+                                            <span className="stamp-ink">{m.icon}</span>
                                         )}
                                     </div>
                                     <span className="text-[10px] font-bold opacity-60">{m.label}</span>
@@ -425,21 +454,74 @@
                                                 onChange={(e) => {
                                                     if (e.target.files && e.target.files[0]) {
                                                         // 시연을 위해 파일 선택 시 바로 인증되도록 처리
-                                                        toggleStamp(showHint.id);
-                                                        setShowHint(null);
-                                                        alert("표식이 성공적으로 인식되었습니다!");
+                                                        unlockStamp(showHint.id);
                                                     }
                                                 }}
                                             />
                                         </label>
                                         {!stamps[showHint.id] && (
-                                            <button onClick={()=> {toggleStamp(showHint.id); setShowHint(null);}} className="text-[#8b0000] text-xs font-bold underline py-2 opacity-50">
+                                            <button onClick={()=> {unlockStamp(showHint.id);}} className="text-[#8b0000] text-xs font-bold underline py-2 opacity-50">
                                                 (시연용) 강제 인증하기
                                             </button>
                                         )}
                                         <button onClick={()=>setShowHint(null)} className="mt-4 text-[#3d2b1f] font-bold text-sm bg-[#3d2b1f]/5 py-4 rounded-xl">지도로 돌아가기</button>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {newlyUnlockedStamp && (
+                        <div className="fixed inset-0 bg-black/85 flex items-center justify-center p-6 z-[100] backdrop-blur-md">
+                            <div className="parchment animate-shake w-full max-w-xs p-8 rounded-3xl text-center shadow-2xl border-8 border-double border-[#8b0000]/40 relative overflow-hidden flex flex-col items-center">
+                                {/* Decorative elements */}
+                                <div className="absolute top-2 left-2 opacity-[0.03]">
+                                    <i data-lucide="skull" style={{width: 40, height: 40}}></i>
+                                </div>
+                                <div className="absolute bottom-2 right-2 opacity-[0.03]">
+                                    <i data-lucide="anchor" style={{width: 40, height: 40}}></i>
+                                </div>
+
+                                <h3 className="text-2xl font-black text-[#8b0000] tracking-wider mb-2">표식 획득 성공!</h3>
+                                <p className="text-xs text-gray-500 mb-6 font-bold">인증이 성공적으로 완료되었습니다.</p>
+
+                                {/* Stamp Animation Container */}
+                                <div className="relative w-44 h-44 my-4 flex items-center justify-center bg-white/20 rounded-full shadow-inner border border-[#3d2b1f]/5">
+                                    {MISSION_DATA.find(m => m.id === newlyUnlockedStamp).image ? (
+                                        <img 
+                                            src={MISSION_DATA.find(m => m.id === newlyUnlockedStamp).image} 
+                                            className="w-40 h-40 object-contain animate-stamp-drop" 
+                                            alt="Stamped mark" 
+                                        />
+                                    ) : (
+                                        <div className="stamp-circle border-4 border-[#8b0000] w-32 h-32 flex items-center justify-center animate-stamp-drop">
+                                            <span className="stamp-ink text-5xl">{MISSION_DATA.find(m => m.id === newlyUnlockedStamp).icon}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="mt-6 mb-8 text-[#3d2b1f] keep-all">
+                                    <p className="text-lg font-black mb-1 text-[#8b0000]">
+                                        {MISSION_DATA.find(m => m.id === newlyUnlockedStamp).attraction}
+                                    </p>
+                                    <p className="text-[10px] font-bold text-gray-500/60 uppercase tracking-wider mb-2">
+                                        {MISSION_DATA.find(m => m.id === newlyUnlockedStamp).label}
+                                    </p>
+                                    <p className="text-sm font-bold text-[#5d4037] leading-relaxed mt-2">
+                                        {nickname} 모험가여, 낭만 해적단의 표식이 입단 증명서에 무사히 기록되었네. 이제 보물에 한 걸음 더 가까워졌군!
+                                    </p>
+                                </div>
+
+                                <button 
+                                    onClick={() => {
+                                        setNewlyUnlockedStamp(null);
+                                        // Re-init lucide icons in case any new icon is rendered
+                                        setTimeout(() => { if (window.lucide) window.lucide.createIcons(); }, 100);
+                                    }} 
+                                    className="wood-btn text-white font-black py-4 px-8 rounded-xl w-full text-lg"
+                                >
+                                    지도로 돌아가기
+                                </button>
                             </div>
                         </div>
                     )}

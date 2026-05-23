@@ -3,9 +3,12 @@ node_modules/
 
 # Screenshots & Debug outputs
 *.png
+!stamp_*.png
 debug.js
 walkthrough.js
 screenshot.js
+get_quota.js
+test_ls.js
 
 # OS files
 .DS_Store
