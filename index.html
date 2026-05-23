@@ -57,23 +57,16 @@
         }
 
         .real-parchment {
-            background-color: #fdf5e6;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.05)),
-                url("https://www.transparenttextures.com/patterns/paper-fibers.png");
-            box-shadow: 
-                inset 0 0 100px rgba(139,69,19,0.2),
-                5px 10px 30px rgba(0,0,0,0.3);
-            border-radius: 4px;
+            background-image: url("letter_parchment.png");
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-color: transparent;
             position: relative;
-        }
-        .real-parchment::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: url("https://www.transparenttextures.com/patterns/old-paper.png");
-            opacity: 0.4;
-            pointer-events: none;
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
+            border: none;
+            box-shadow: none;
+            padding: 6rem 2.5rem 5rem 2.5rem;
+            text-shadow: 0.3px 0.3px 0.5px rgba(44, 30, 19, 0.4);
         }
 
         .wood-btn {
@@ -588,16 +581,15 @@
                     className="mobile-app-container font-ko p-8 flex flex-col items-center justify-center text-center min-h-screen cursor-pointer"
                     onClick={() => setVisibleLines(prev => prev + 1)}
                 >
-                    <div className="real-parchment p-10 space-y-10 text-xl font-bold keep-all leading-relaxed text-[#3d2b1f] w-full relative">
+                    <div className="real-parchment space-y-8 text-xl font-bold keep-all leading-relaxed text-[#2c1e13] w-full relative">
                         <p className="story-line text-2xl font-black" style={visibleLines >= 1 ? {opacity:1, animation:'none'} : {animationDelay:'0.5s'}}>마침내 찾아낸 보물 상자...</p>
                         <p className="story-line" style={visibleLines >= 2 ? {opacity:1, animation:'none'} : {animationDelay:'2s'}}>하지만 상자 안에는 보물 대신<br/>낡은 편지 한 장이 들어있었다네.</p>
                         
-                        <div className="p-8 rounded-xl border-l-8 border-[#8b0000] shadow-md story-line italic text-lg bg-white/30" style={visibleLines >= 3 ? {opacity:1, animation:'none'} : {animationDelay:'4.5s'}}>
-                            <i data-lucide="quote" className="text-[#8b0000]/20 absolute top-4 left-4" style={{width: 40, height: 40}}></i>
+                        <div className="py-4 px-6 border-y-2 border-dashed border-[#8b0000]/20 story-line italic text-lg relative" style={visibleLines >= 3 ? {opacity:1, animation:'none'} : {animationDelay:'4.5s'}}>
                             "더위에 지친 사람들을 구하기 위해<br/>망설임 없이 나선 그 열정과 용기."
                         </div>
 
-                        <p className="story-line text-2xl gold-text italic font-black" style={visibleLines >= 4 ? {opacity:1, animation:'none'} : {animationDelay:'7s'}}>진정한 보물은 그대의 마음속에 있네</p>
+                        <p className="story-line text-2xl text-[#8b0000] italic font-black" style={visibleLines >= 4 ? {opacity:1, animation:'none'} : {animationDelay:'7s'}}>진정한 보물은 그대의 마음속에 있네</p>
                         
                         <div className="story-line space-y-2" style={visibleLines >= 5 ? {opacity:1, animation:'none'} : {animationDelay:'9s'}}>
                             <p className="text-4xl text-[#8b0000] font-black">환영하네!</p>
