@@ -5,6 +5,7 @@ node_modules/
 *.png
 !stamp_*.png
 !letter_parchment_light.png
+!event_banner.png
 debug.js
 walkthrough.js
 screenshot.js
