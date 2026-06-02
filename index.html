@@ -275,14 +275,22 @@
                     });
 
                     if (code) {
-                        if (scanModeRef.current === 'chest' && code.data === CHEST_QR_DATA) {
-                            stopScanner();
-                            setStep('ending');
-                            return;
-                        } else if (scanModeRef.current === 'reward' && code.data === MASTER_QR_DATA) {
-                            stopScanner();
-                            saveProgress(stamps, null, true);
-                            return;
+                        if (scanModeRef.current === 'chest') {
+                            const isLegacy = code.data === CHEST_QR_DATA;
+                            const isURL = code.data.includes('action=chest');
+                            if (isLegacy || isURL) {
+                                stopScanner();
+                                setStep('ending');
+                                return;
+                            }
+                        } else if (scanModeRef.current === 'reward') {
+                            const isLegacy = code.data === MASTER_QR_DATA;
+                            const isURL = code.data.includes('action=reward');
+                            if (isLegacy || isURL) {
+                                stopScanner();
+                                saveProgress(stamps, null, true);
+                                return;
+                            }
                         } else if (['swingship', 'splash', 'flume'].includes(scanModeRef.current)) {
                             const expectedCode = `STAMP_${scanModeRef.current.toUpperCase()}_2026`;
                             const targetId = scanModeRef.current;
@@ -335,8 +343,10 @@
                     setStep('map');
                 }
 
-                // Process URL parameter (?spot=...)
+                // Process URL parameters
                 const urlParams = new URLSearchParams(window.location.search);
+                
+                // 1. ?spot=... (Attractions)
                 const spot = urlParams.get('spot');
                 if (spot && ['swingship', 'splash', 'flume'].includes(spot)) {
                     if (!savedData || !currentNickname) {
@@ -359,6 +369,44 @@
                         // Clear the URL parameter so refresh doesn't re-trigger
                         window.history.replaceState({}, document.title, window.location.pathname);
                     }
+                }
+
+                // 2. ?action=... (Chest / Reward)
+                const action = urlParams.get('action');
+                if (action) {
+                    const hasAllStamps = currentStamps.swingship && currentStamps.splash && currentStamps.flume;
+                    
+                    if (action === 'chest') {
+                        if (currentNickname && hasAllStamps) {
+                            // Valid user who collected all stamps: unlock chest
+                            setStep('ending');
+                            alert("⚓ [낭만 해적단] 보물상자의 자물쇠가 풀렸다! 상자 안을 확인해 보아라!");
+                        } else {
+                            // Invalid scan attempt
+                            alert("🏴‍☠️ [낭만 해적단] 이런, 풋내기 모험가여! 지도에 숨겨진 3개의 표식을 모두 찾지도 못했는데 보물상자를 엿보다니! 썩 돌아가서 표식부터 찾아오거라! ⚓");
+                            if (currentNickname) {
+                                setStep('map');
+                            } else {
+                                setStep('intro');
+                            }
+                        }
+                    } else if (action === 'reward') {
+                        if (currentNickname && hasAllStamps) {
+                            // Valid user who finished the adventure: claim reward
+                            saveProgress(currentStamps, 'ending', true);
+                            alert("⚔️ [낭만 해적단] 낭만 해적단원의 무기 수령이 완료되었다! 위대한 낭만 해적이 탄생했도다!");
+                        } else {
+                            // Invalid scan attempt
+                            alert("⚔️ [낭만 해적단] 어허! 아직 보물을 발견하고 임명장도 받지 못한 풋내기 모험가로군! 무기고의 캐스트 단원들도 자격 없는 자에겐 무기를 내주지 않는다네. 얼른 보물부터 찾고 오게나!");
+                            if (currentNickname) {
+                                setStep('map');
+                            } else {
+                                setStep('intro');
+                            }
+                        }
+                    }
+                    // Clear the URL parameter
+                    window.history.replaceState({}, document.title, window.location.pathname);
                 }
             }, []);
 
