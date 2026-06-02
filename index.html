@@ -187,7 +187,7 @@
         const MISSION_DATA = [
             { id: 'swingship', icon: '⚓', image: 'stamp_swingship.png', label: '첫 번째 표식', attraction: '파이러츠 스윙십', hint: '우리가 타고 온 배 어때?\n너도 한번 타볼래? 더위가 아주 싹 가실거야!' },
             { id: 'splash', icon: '🌊', image: 'stamp_splash.png', label: '두 번째 표식', attraction: '자이언트 스플래쉬', hint: '땀에 젖은 그대여!\n이 참에 아예 물에 홀딱 젖어버리는 것이 어떤가?' },
-            { id: 'flume', icon: '🛶', image: 'stamp_flume.png', label: '세 번째 표식', attraction: "오거스 후룸 (Ogres' Flume)", hint: '오거들이 만든 뗏목도 꽤 훌륭하더군.. 물론 우리 낭만 해적단의 배에 비할 수 없지만 말이야' },
+            { id: 'flume', icon: '🛶', image: 'stamp_flume.png', label: '세 번째 표식', attraction: "오거스 후룸", hint: '오거들이 만든 뗏목도 꽤 훌륭하더군.. 물론 우리 낭만 해적단의 배에 비할 수 없지만 말이야' },
         ];
 
         const PirateLogo = () => {
@@ -529,7 +529,7 @@
                                 {scanModeRef.current === 'reward' && <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
                                 {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && (
                                     <>
-                                        {MISSION_DATA.find(m => m.id === scanModeRef.current)?.attraction}의<br/>
+                                        해적단의<br/>
                                         <span className="text-[#d4af37]">표식 QR 코드</span>를 인식시켜주세요
                                     </>
                                 )}
@@ -602,7 +602,7 @@
                                 {scanModeRef.current === 'reward' && <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
                                 {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && (
                                     <>
-                                        {MISSION_DATA.find(m => m.id === scanModeRef.current)?.attraction}의<br/>
+                                        해적단의<br/>
                                         <span className="text-[#d4af37]">표식 QR 코드</span>를 인식시켜주세요
                                     </>
                                 )}
@@ -758,7 +758,7 @@
                                 {scanModeRef.current === 'reward' && <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
                                 {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && (
                                     <>
-                                        {MISSION_DATA.find(m => m.id === scanModeRef.current)?.attraction}의<br/>
+                                        해적단의<br/>
                                         <span className="text-[#d4af37]">표식 QR 코드</span>를 인식시켜주세요
                                     </>
                                 )}
