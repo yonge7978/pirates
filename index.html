@@ -515,6 +515,54 @@
                             </div>
                         </div>
                     )}
+
+                    {isScanning && (
+                        <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center p-6 z-[200]">
+                            <div className="w-full max-w-sm aspect-square bg-black rounded-3xl overflow-hidden relative border-4 border-[#d4af37]">
+                                <video ref={videoRef} className="w-full h-full object-cover" />
+                                <canvas ref={canvasRef} className="hidden" />
+                                <div className="absolute inset-0 border-[40px] border-black/40"></div>
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-[#d4af37] rounded-2xl animate-pulse"></div>
+                            </div>
+                            <p className="text-white mt-8 text-lg font-bold text-center keep-all font-ko">
+                                {scanModeRef.current === 'chest' && <>보물 상자의<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
+                                {scanModeRef.current === 'reward' && <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
+                                {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && (
+                                    <>
+                                        {MISSION_DATA.find(m => m.id === scanModeRef.current)?.attraction}의<br/>
+                                        <span className="text-[#d4af37]">표식 QR 코드</span>를 인식시켜주세요
+                                    </>
+                                )}
+                            </p>
+                            
+                            {/* 시연용 우회 버튼 */}
+                            <button 
+                                onClick={() => {
+                                    const mode = scanModeRef.current;
+                                    stopScanner();
+                                    if (mode === 'chest') {
+                                        setStep('ending');
+                                    } else if (mode === 'reward') {
+                                        saveProgress(stamps, null, true);
+                                    } else if (['swingship', 'splash', 'flume'].includes(mode)) {
+                                        unlockStamp(mode);
+                                    }
+                                }}
+                                className="mt-4 text-[#d4af37]/40 text-[10px] font-bold uppercase tracking-widest hover:text-[#d4af37] transition-colors"
+                            >
+                                {scanModeRef.current === 'chest' && "(시연용) 강제 상자 열기"}
+                                {scanModeRef.current === 'reward' && "(시연용) 강제 보상 수령 완료"}
+                                {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && "(시연용) 강제 표식 획득"}
+                            </button>
+
+                            <button 
+                                onClick={stopScanner}
+                                className="mt-8 px-8 py-3 bg-white/10 text-white rounded-full font-bold border border-white/20 text-sm"
+                            >
+                                취소하기
+                            </button>
+                        </div>
+                    )}
                 </div>
             );
 
@@ -705,17 +753,35 @@
                                 <div className="absolute inset-0 border-[40px] border-black/40"></div>
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-[#d4af37] rounded-2xl animate-pulse"></div>
                             </div>
-                            <p className="text-white mt-8 text-lg font-bold text-center keep-all">스태프가 제시하는<br/><span className="text-[#d4af37]">마스터 QR 코드</span>를 인식시켜주세요</p>
+                            <p className="text-white mt-8 text-lg font-bold text-center keep-all font-ko">
+                                {scanModeRef.current === 'chest' && <>보물 상자의<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
+                                {scanModeRef.current === 'reward' && <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
+                                {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && (
+                                    <>
+                                        {MISSION_DATA.find(m => m.id === scanModeRef.current)?.attraction}의<br/>
+                                        <span className="text-[#d4af37]">표식 QR 코드</span>를 인식시켜주세요
+                                    </>
+                                )}
+                            </p>
                             
                             {/* 시연용 우회 버튼 */}
                             <button 
                                 onClick={() => {
+                                    const mode = scanModeRef.current;
                                     stopScanner();
-                                    saveProgress(stamps, null, true);
+                                    if (mode === 'chest') {
+                                        setStep('ending');
+                                    } else if (mode === 'reward') {
+                                        saveProgress(stamps, null, true);
+                                    } else if (['swingship', 'splash', 'flume'].includes(mode)) {
+                                        unlockStamp(mode);
+                                    }
                                 }}
                                 className="mt-4 text-[#d4af37]/40 text-[10px] font-bold uppercase tracking-widest hover:text-[#d4af37] transition-colors"
                             >
-                                (시연용) 강제 수령 확인
+                                {scanModeRef.current === 'chest' && "(시연용) 강제 상자 열기"}
+                                {scanModeRef.current === 'reward' && "(시연용) 강제 보상 수령 완료"}
+                                {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && "(시연용) 강제 표식 획득"}
                             </button>
 
                             <button 
