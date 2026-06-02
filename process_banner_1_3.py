@@ -1,24 +1,59 @@
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFilter
 
-def crop_to_1_3_banner(input_path, output_path):
-    img = Image.open(input_path)
+def generate_perfect_banner(src_path, clean_parchment_path, output_path):
+    img = Image.open(src_path)
     
-    # Target 1:3 aspect ratio
-    # Width = 334, Height = 1002 (334 * 3)
-    # Center of the 1024x1024 canvas is 512
-    # So we crop from x = 512 - 167 = 345 to x = 512 + 167 = 679
-    # Let's adjust slightly to center the scroll perfectly.
-    # Looking at the scroll, the center is around x=500.
-    # Let's use x_start = 500 - 167 = 333, x_end = 500 + 167 = 667.
-    # For y, we crop from y = 18 to y = 1020 (height = 1002).
-    crop_box = (333, 18, 667, 1020)
+    # 1. Resize canvas horizontally to fit the scroll boundaries (360px wide scroll)
+    # into the 1:3 vertical banner width (341px) without cropping the scroll edges.
+    scaled_img = img.resize((900, 1024), Image.Resampling.LANCZOS)
     
-    cropped_img = img.crop(crop_box)
-    cropped_img.save(output_path, "PNG")
-    print(f"1:3 banner cropped successfully: {output_path} (Size: {cropped_img.size})")
+    # 2. Crop the 1:3 banner (width=341, height=1024) centered on the scroll.
+    # Center of scroll is at x = 510 in the original canvas (510 * 900 / 1024 = 448 in scaled).
+    crop_box = (278, 0, 619, 1024)
+    banner = scaled_img.crop(crop_box)
+    
+    # 3. Load clean parchment texture to erase the handwritten text below the QR frame
+    clean_p = Image.open(clean_parchment_path)
+    
+    # Crop a clean patch of size 290x240 from clean parchment
+    patch = clean_p.crop((180, 300, 470, 540))
+    
+    # 4. Create a custom blending mask to blend edges smoothly
+    mask = Image.new("L", patch.size, 255)
+    
+    left_feather = 15.0
+    right_feather = 15.0
+    top_feather = 6.0
+    bottom_feather = 6.0
+    
+    for y in range(patch.height):
+        for x in range(patch.width):
+            dist_left = x
+            dist_right = patch.width - 1 - x
+            dist_top = y
+            dist_bottom = patch.height - 1 - y
+            
+            f_left = min(1.0, dist_left / left_feather)
+            f_right = min(1.0, dist_right / right_feather)
+            f_top = min(1.0, dist_top / top_feather)
+            f_bottom = min(1.0, dist_bottom / bottom_feather)
+            
+            opacity = min(f_left, f_right, f_top, f_bottom)
+            mask.putpixel((x, y), int(opacity * 255))
+            
+    # Smooth the mask slightly
+    feathered_mask = mask.filter(ImageFilter.GaussianBlur(1))
+    
+    # 5. Paste the clean patch over the text region (x=25, y=636)
+    banner.paste(patch, (25, 636), mask=feathered_mask)
+    
+    # Save the final perfect banner
+    banner.save(output_path, "PNG")
+    print(f"Perfect 1:3 banner generated successfully: {output_path}")
 
 if __name__ == "__main__":
-    crop_to_1_3_banner(
+    generate_perfect_banner(
         "/Users/yong/.gemini/antigravity-cli/brain/94239e22-cba2-4161-b34b-e5c9b39ae674/event_banner_letter_1_3_1780304477833.png",
+        "/Users/yong/workspace/pirates/letter_parchment_light.png",
         "/Users/yong/workspace/pirates/event_banner.png"
     )
