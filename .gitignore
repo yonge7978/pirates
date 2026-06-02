@@ -19,3 +19,10 @@ test_ls.js
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.vercel
+
+# Exclude generated print banner explicitly
+event_banner_600x1800.png
+send_webex_image.py
+generate_flume_qr.py
+qr_flume.png

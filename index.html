@@ -212,9 +212,16 @@
             );
         };
 
+        const SPOT_NAMES = {
+            swingship: '파이러츠 스윙십',
+            splash: '자이언트 스플래쉬',
+            flume: '오거스 후룸'
+        };
+
         function App() {
             const [step, setStep] = useState('intro');
             const [nickname, setNickname] = useState('');
+            const [pendingSpot, setPendingSpot] = useState(null);
             const [stamps, setStamps] = useState({ swingship: false, splash: false, flume: false });
             const [isClaimed, setIsClaimed] = useState(false);
             const [showHint, setShowHint] = useState(null);
@@ -278,11 +285,31 @@
                             return;
                         } else if (['swingship', 'splash', 'flume'].includes(scanModeRef.current)) {
                             const expectedCode = `STAMP_${scanModeRef.current.toUpperCase()}_2026`;
+                            const targetId = scanModeRef.current;
+                            
+                            console.log("[QR Scanner] Scanned raw data:", code.data);
+                            console.log("[QR Scanner] Expecting target:", targetId);
+                            
+                            // 1. Check legacy plain text stamp code
                             if (code.data === expectedCode) {
-                                const targetId = scanModeRef.current;
+                                console.log("[QR Scanner] Legacy code match success!");
                                 stopScanner();
                                 unlockStamp(targetId);
                                 return;
+                            }
+                            
+                            // 2. Check new URL pattern with spot parameter (robust regex extraction)
+                            if (code.data.includes('spot=')) {
+                                const spotMatch = code.data.match(/[?&]spot=([^&/\s?#]+)/);
+                                const spot = spotMatch ? spotMatch[1] : null;
+                                console.log("[QR Scanner] Extracted spot:", spot);
+                                
+                                if (spot === targetId) {
+                                    console.log("[QR Scanner] URL spot match success!");
+                                    stopScanner();
+                                    unlockStamp(targetId);
+                                    return;
+                                }
                             }
                         }
                     }
@@ -292,12 +319,46 @@
 
             useEffect(() => {
                 const savedData = localStorage.getItem(APP_ID);
+                let currentNickname = "";
+                let currentStamps = stamps;
+                let currentIsClaimed = false;
+
                 if (savedData) {
                     const parsed = JSON.parse(savedData);
-                    setNickname(parsed.nickname);
-                    setStamps(parsed.stamps);
-                    setIsClaimed(parsed.isClaimed || false);
+                    currentNickname = parsed.nickname;
+                    currentStamps = parsed.stamps;
+                    currentIsClaimed = parsed.isClaimed || false;
+                    
+                    setNickname(currentNickname);
+                    setStamps(currentStamps);
+                    setIsClaimed(currentIsClaimed);
                     setStep('map');
+                }
+
+                // Process URL parameter (?spot=...)
+                const urlParams = new URLSearchParams(window.location.search);
+                const spot = urlParams.get('spot');
+                if (spot && ['swingship', 'splash', 'flume'].includes(spot)) {
+                    if (!savedData || !currentNickname) {
+                        // User hasn't started the game yet: set pending spot
+                        setPendingSpot(spot);
+                    } else {
+                        // Existing adventurer: unlock stamp immediately
+                        if (!currentStamps[spot]) {
+                            const newStamps = { ...currentStamps, [spot]: true };
+                            setStamps(newStamps);
+                            
+                            const data = { 
+                                nickname: currentNickname, 
+                                stamps: newStamps,
+                                isClaimed: currentIsClaimed
+                            };
+                            localStorage.setItem(APP_ID, JSON.stringify(data));
+                            setNewlyUnlockedStamp(spot);
+                        }
+                        // Clear the URL parameter so refresh doesn't re-trigger
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
                 }
             }, []);
 
@@ -324,6 +385,30 @@
                 toggleStamp(id);
                 setShowHint(null);
                 setNewlyUnlockedStamp(id);
+            };
+
+            const startAdventure = () => {
+                if (!nickname) return;
+                let finalStamps = { ...stamps };
+                if (pendingSpot) {
+                    finalStamps[pendingSpot] = true;
+                    setStamps(finalStamps);
+                }
+                
+                const data = { 
+                    nickname, 
+                    stamps: finalStamps,
+                    isClaimed: false
+                };
+                localStorage.setItem(APP_ID, JSON.stringify(data));
+                setStep('map');
+                
+                if (pendingSpot) {
+                    setNewlyUnlockedStamp(pendingSpot);
+                    setPendingSpot(null);
+                }
+                
+                window.history.replaceState({}, document.title, window.location.pathname);
             };
 
             const executeHardReset = () => {
@@ -356,6 +441,15 @@
                         </p>
                     </div>
 
+                    {pendingSpot && (
+                        <div className="mb-6 p-5 rounded-2xl border-2 border-dashed border-[#8b0000] bg-[#fdf6e2]/95 text-[#8b0000] font-bold text-base leading-relaxed animate-pulse shadow-md w-full max-w-md relative z-10 keep-all">
+                            📌 <strong>첫 번째 표식 획득 대기 중!</strong><br/>
+                            [{SPOT_NAMES[pendingSpot]}] 현장에서 접속하셨습니다.<br/>
+                            이름을 등록하고 모험을 시작하시면<br/>
+                            해당 표식이 지도에 즉시 기록됩니다!
+                        </div>
+                    )}
+
                     <div className="w-full space-y-6 px-4 relative z-10">
                         <div className="p-2 border-2 border-dashed border-[#3d2b1f]/20 rounded-2xl bg-white/20 backdrop-blur-sm">
                             <input 
@@ -366,7 +460,7 @@
                             />
                         </div>
                         <button 
-                            onClick={() => nickname && saveProgress(stamps, 'map')}
+                            onClick={startAdventure}
                             className="wood-btn text-white font-black py-6 px-8 rounded-xl w-full text-2xl"
                         >
                             모험 시작하기
