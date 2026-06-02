@@ -233,6 +233,13 @@
             const [storySkipCount, setStorySkipCount] = useState(0);
             const [visibleLines, setVisibleLines] = useState(0);
             const [newlyUnlockedStamp, setNewlyUnlockedStamp] = useState(null);
+            
+            // Hidden Bypass / Reset states
+            const [secretTapCount, setSecretTapCount] = useState(0);
+            const secretTapTimeoutRef = useRef(null);
+            const [resetTapCount, setResetTapCount] = useState(0);
+            const resetTapTimeoutRef = useRef(null);
+
             const certificateRef = useRef(null);
             const videoRef = useRef(null);
             const canvasRef = useRef(null);
@@ -241,6 +248,44 @@
             const MASTER_QR_DATA = "ROMANTIC_PIRATE_2026";
             const CHEST_QR_DATA = "OPEN_TREASURE_CHEST_2026";
             const scanModeRef = useRef(null);
+
+            const handleSecretTap = () => {
+                if (secretTapTimeoutRef.current) clearTimeout(secretTapTimeoutRef.current);
+                secretTapTimeoutRef.current = setTimeout(() => setSecretTapCount(0), 2000);
+                
+                setSecretTapCount(prev => {
+                    const next = prev + 1;
+                    if (next >= 5) {
+                        const mode = scanModeRef.current;
+                        stopScanner();
+                        if (mode === 'chest') {
+                            setStep('ending');
+                        } else if (mode === 'reward') {
+                            saveProgress(stamps, null, true);
+                        } else if (['swingship', 'splash', 'flume'].includes(mode)) {
+                            unlockStamp(mode);
+                        }
+                        clearTimeout(secretTapTimeoutRef.current);
+                        return 0;
+                    }
+                    return next;
+                });
+            };
+
+            const handleResetTap = () => {
+                if (resetTapTimeoutRef.current) clearTimeout(resetTapTimeoutRef.current);
+                resetTapTimeoutRef.current = setTimeout(() => setResetTapCount(0), 2000);
+                
+                setResetTapCount(prev => {
+                    const next = prev + 1;
+                    if (next >= 5) {
+                        setIsResetConfirmOpen(true);
+                        clearTimeout(resetTapTimeoutRef.current);
+                        return 0;
+                    }
+                    return next;
+                });
+            };
 
             const startScanner = (mode) => {
                 scanModeRef.current = mode;
@@ -397,13 +442,18 @@
                             alert("⚔️ [낭만 해적단] 낭만 해적단원의 무기 수령이 완료되었다! 위대한 낭만 해적이 탄생했도다!");
                         } else {
                             // Invalid scan attempt
-                            alert("⚔️ [낭만 해적단] 어허! 아직 보물을 발견하고 임명장도 받지 못한 풋내기 모험가로군! 무기고의 캐스트 단원들도 자격 없는 자에겐 무기를 내주지 않는다네. 얼른 보물부터 찾고 오게나!");
+                            alert("⚔️ [낭만 해적단] 어허! 아직 보물을 발견하고 임명장도 받지 못한 풋내기 모험가로군! 무기고 of the 캐스트 단원들도 자격 없는 자에겐 무기를 내주지 않는다네. 얼른 보물부터 찾고 오게나!");
                             if (currentNickname) {
                                 setStep('map');
                             } else {
                                 setStep('intro');
                             }
                         }
+                    } else if (action === 'reset') {
+                        localStorage.removeItem(APP_ID);
+                        alert("🧹 [낭만 해적단] 모든 모험 데이터가 리셋되었습니다. 초기 상태로 되돌아갑니다!");
+                        window.location.href = window.location.pathname;
+                        return;
                     }
                     // Clear the URL parameter
                     window.history.replaceState({}, document.title, window.location.pathname);
@@ -475,7 +525,7 @@
                         <i data-lucide="skull" style={{width: 100, height: 100}}></i>
                     </div>
                     
-                    <div className="mb-2 float text-[#8b0000] drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                    <div onClick={handleResetTap} className="mb-2 float text-[#8b0000] drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] cursor-default">
                         <i data-lucide="anchor" style={{width: 100, height: 100}}></i>
                     </div>
 
@@ -526,7 +576,7 @@
                             </div>
                             <div>
                                 <p className="text-[10px] font-bold text-[#8b0000] tracking-widest leading-none mb-1 uppercase">모험가</p>
-                                <h2 className="text-2xl font-black text-[#3d2b1f]">{nickname}</h2>
+                                <h2 onClick={handleResetTap} className="text-2xl font-black text-[#3d2b1f] cursor-default select-none">{nickname}</h2>
                             </div>
                         </div>
                         <div className="text-right">
@@ -667,7 +717,7 @@
                                 <div className="absolute inset-0 border-[40px] border-black/40"></div>
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-[#d4af37] rounded-2xl animate-pulse"></div>
                             </div>
-                            <p className="text-white mt-8 text-lg font-bold text-center keep-all font-ko">
+                            <p onClick={handleSecretTap} className="text-white mt-8 text-lg font-bold text-center keep-all font-ko select-none">
                                 {scanModeRef.current === 'chest' && <>보물 상자의<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
                                 {scanModeRef.current === 'reward' && <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
                                 {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && (
@@ -677,26 +727,6 @@
                                     </>
                                 )}
                             </p>
-                            
-                            {/* 시연용 우회 버튼 */}
-                            <button 
-                                onClick={() => {
-                                    const mode = scanModeRef.current;
-                                    stopScanner();
-                                    if (mode === 'chest') {
-                                        setStep('ending');
-                                    } else if (mode === 'reward') {
-                                        saveProgress(stamps, null, true);
-                                    } else if (['swingship', 'splash', 'flume'].includes(mode)) {
-                                        unlockStamp(mode);
-                                    }
-                                }}
-                                className="mt-4 text-[#d4af37]/40 text-[10px] font-bold uppercase tracking-widest hover:text-[#d4af37] transition-colors"
-                            >
-                                {scanModeRef.current === 'chest' && "(시연용) 강제 상자 열기"}
-                                {scanModeRef.current === 'reward' && "(시연용) 강제 보상 수령 완료"}
-                                {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && "(시연용) 강제 표식 획득"}
-                            </button>
 
                             <button 
                                 onClick={stopScanner}
@@ -817,7 +847,7 @@
                         <button onClick={()=> {setStep('intro'); window.scrollTo(0,0);}} className="w-full text-base font-bold text-[#3d2b1f]/60 underline mt-4">처음 화면으로</button>
                         
                         <div className="pt-16 pb-8 flex flex-col items-center">
-                            <button onClick={() => setIsResetConfirmOpen(true)} className="text-[#3d2b1f]/30 text-[10px] font-bold uppercase tracking-widest hover:text-[#8b0000] transition-colors">데이터 초기화 (시연용)</button>
+                            {/* 데이터 초기화 버튼 숨김 */}
                         </div>
                     </div>
 
@@ -829,7 +859,7 @@
                                 <div className="absolute inset-0 border-[40px] border-black/40"></div>
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-[#d4af37] rounded-2xl animate-pulse"></div>
                             </div>
-                            <p className="text-white mt-8 text-lg font-bold text-center keep-all font-ko">
+                            <p onClick={handleSecretTap} className="text-white mt-8 text-lg font-bold text-center keep-all font-ko select-none">
                                 {scanModeRef.current === 'chest' && <>보물 상자의<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
                                 {scanModeRef.current === 'reward' && <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
                                 {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && (
@@ -839,26 +869,6 @@
                                     </>
                                 )}
                             </p>
-                            
-                            {/* 시연용 우회 버튼 */}
-                            <button 
-                                onClick={() => {
-                                    const mode = scanModeRef.current;
-                                    stopScanner();
-                                    if (mode === 'chest') {
-                                        setStep('ending');
-                                    } else if (mode === 'reward') {
-                                        saveProgress(stamps, null, true);
-                                    } else if (['swingship', 'splash', 'flume'].includes(mode)) {
-                                        unlockStamp(mode);
-                                    }
-                                }}
-                                className="mt-4 text-[#d4af37]/40 text-[10px] font-bold uppercase tracking-widest hover:text-[#d4af37] transition-colors"
-                            >
-                                {scanModeRef.current === 'chest' && "(시연용) 강제 상자 열기"}
-                                {scanModeRef.current === 'reward' && "(시연용) 강제 보상 수령 완료"}
-                                {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && "(시연용) 강제 표식 획득"}
-                            </button>
 
                             <button 
                                 onClick={stopScanner}
