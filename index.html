@@ -275,6 +275,14 @@
                             stopScanner();
                             saveProgress(stamps, null, true);
                             return;
+                        } else if (['swingship', 'splash', 'flume'].includes(scanModeRef.current)) {
+                            const expectedCode = `STAMP_${scanModeRef.current.toUpperCase()}_2026`;
+                            if (code.data === expectedCode) {
+                                const targetId = scanModeRef.current;
+                                stopScanner();
+                                unlockStamp(targetId);
+                                return;
+                            }
                         }
                     }
                 }
@@ -436,27 +444,16 @@
                                     <h4 className="text-lg font-black mb-2 text-[#8b0000]">{showHint.label}</h4>
                                     <p className="text-xl mb-10 text-[#3d2b1f] font-bold italic keep-all leading-relaxed">"{showHint.hint}"</p>
                                     <div className="flex flex-col gap-4">
-                                        <label className="wood-btn text-white py-5 rounded-2xl font-black flex items-center justify-center gap-3 text-lg cursor-pointer">
+                                        <button 
+                                            onClick={() => {
+                                                setShowHint(null);
+                                                startScanner(showHint.id);
+                                            }}
+                                            className="wood-btn text-white py-5 rounded-2xl font-black flex items-center justify-center gap-3 text-lg btn-active"
+                                        >
                                             <i data-lucide="camera" style={{width: 24, height: 24}}></i>
                                             표식 인식하기
-                                            <input 
-                                                type="file" 
-                                                accept="image/*" 
-                                                capture="environment" 
-                                                className="hidden" 
-                                                onChange={(e) => {
-                                                    if (e.target.files && e.target.files[0]) {
-                                                        // 시연을 위해 파일 선택 시 바로 인증되도록 처리
-                                                        unlockStamp(showHint.id);
-                                                    }
-                                                }}
-                                            />
-                                        </label>
-                                        {!stamps[showHint.id] && (
-                                            <button onClick={()=> {unlockStamp(showHint.id);}} className="text-[#8b0000] text-xs font-bold underline py-2 opacity-50">
-                                                (시연용) 강제 인증하기
-                                            </button>
-                                        )}
+                                        </button>
                                         <button onClick={()=>setShowHint(null)} className="mt-4 text-[#3d2b1f] font-bold text-sm bg-[#3d2b1f]/5 py-4 rounded-xl">지도로 돌아가기</button>
                                     </div>
                                 </div>
@@ -552,17 +549,35 @@
                                 <div className="absolute inset-0 border-[40px] border-black/40"></div>
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-[#d4af37] rounded-2xl animate-pulse"></div>
                             </div>
-                            <p className="text-white mt-8 text-lg font-bold text-center keep-all">보물 상자의<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</p>
+                            <p className="text-white mt-8 text-lg font-bold text-center keep-all font-ko">
+                                {scanModeRef.current === 'chest' && <>보물 상자의<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
+                                {scanModeRef.current === 'reward' && <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
+                                {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && (
+                                    <>
+                                        {MISSION_DATA.find(m => m.id === scanModeRef.current)?.attraction}의<br/>
+                                        <span className="text-[#d4af37]">표식 QR 코드</span>를 인식시켜주세요
+                                    </>
+                                )}
+                            </p>
                             
                             {/* 시연용 우회 버튼 */}
                             <button 
                                 onClick={() => {
+                                    const mode = scanModeRef.current;
                                     stopScanner();
-                                    setStep('ending');
+                                    if (mode === 'chest') {
+                                        setStep('ending');
+                                    } else if (mode === 'reward') {
+                                        saveProgress(stamps, null, true);
+                                    } else if (['swingship', 'splash', 'flume'].includes(mode)) {
+                                        unlockStamp(mode);
+                                    }
                                 }}
                                 className="mt-4 text-[#d4af37]/40 text-[10px] font-bold uppercase tracking-widest hover:text-[#d4af37] transition-colors"
                             >
-                                (시연용) 강제 상자 열기
+                                {scanModeRef.current === 'chest' && "(시연용) 강제 상자 열기"}
+                                {scanModeRef.current === 'reward' && "(시연용) 강제 보상 수령 완료"}
+                                {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && "(시연용) 강제 표식 획득"}
                             </button>
 
                             <button 
