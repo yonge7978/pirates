@@ -26,3 +26,6 @@ event_banner_600x1800.png
 send_webex_image.py
 generate_flume_qr.py
 qr_flume.png
+generate_other_qrs.py
+qr_splash.png
+qr_swingship.png
