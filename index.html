@@ -749,19 +749,26 @@
                     className="mobile-app-container font-ko p-8 flex flex-col items-center justify-center text-center min-h-screen cursor-pointer animate-[storyFadeIn_0.8s_ease-out]"
                     onClick={() => setVisibleLines(prev => prev + 1)}
                 >
-                    <div className="real-parchment space-y-6 text-lg font-bold keep-all leading-relaxed text-[#2c1e13] w-full relative">
-                        <p className="story-line text-xl font-black" style={visibleLines >= 1 ? {opacity:1, animation:'none'} : {animationDelay:'0.5s'}}>마침내 찾아낸 보물 상자...</p>
-                        <p className="story-line text-sm text-[#2c1e13]/80" style={visibleLines >= 2 ? {opacity:1, animation:'none'} : {animationDelay:'2s'}}>하지만 상자 안에는 보물 대신<br/>낡은 편지 한 장이 들어있었다네.</p>
-                        
-                        <div className="py-3 px-4 border-y border-dashed border-[#8b0000]/20 story-line italic text-base relative" style={visibleLines >= 3 ? {opacity:1, animation:'none'} : {animationDelay:'4.5s'}}>
-                            "더위에 지친 사람들을 구하기 위해<br/>망설임 없이 나선 그 열정과 용기."
+                    <div className="real-parchment space-y-6 text-lg font-bold keep-all leading-relaxed text-[#2c1e13] w-full relative overflow-hidden">
+                        {/* 킹받는 해적 두목 배경 워터마크 추가 */}
+                        <div className="absolute inset-0 z-0 flex items-center justify-center opacity-[0.06] pointer-events-none select-none">
+                            <img src="laughing_pirate_captain.png" className="w-full h-auto object-contain scale-110" />
                         </div>
-
-                        <p className="story-line text-lg text-[#8b0000] italic font-black" style={visibleLines >= 4 ? {opacity:1, animation:'none'} : {animationDelay:'7s'}}>진정한 보물은 그대의 마음속에 있네</p>
                         
-                        <div className="story-line space-y-1" style={visibleLines >= 5 ? {opacity:1, animation:'none'} : {animationDelay:'9s'}}>
-                            <p className="text-2xl text-[#8b0000] font-black">환영하네!</p>
-                            <p className="text-base">우리 낭만 해적단의 <br/>진정한 일원이 된 것을!</p>
+                        <div className="relative z-10 space-y-6">
+                            <p className="story-line text-xl font-black" style={visibleLines >= 1 ? {opacity:1, animation:'none'} : {animationDelay:'0.5s'}}>마침내 찾아낸 보물 상자...</p>
+                            <p className="story-line text-sm text-[#2c1e13]/80" style={visibleLines >= 2 ? {opacity:1, animation:'none'} : {animationDelay:'2s'}}>하지만 상자 안에는 보물 대신<br/>낡은 편지 한 장이 들어있었다네.</p>
+                            
+                            <div className="py-3 px-4 border-y border-dashed border-[#8b0000]/20 story-line italic text-base relative" style={visibleLines >= 3 ? {opacity:1, animation:'none'} : {animationDelay:'4.5s'}}>
+                                "더위에 지친 사람들을 구하기 위해<br/>망설임 없이 나선 그 열정과 용기."
+                            </div>
+
+                            <p className="story-line text-lg text-[#8b0000] italic font-black" style={visibleLines >= 4 ? {opacity:1, animation:'none'} : {animationDelay:'7s'}}>진정한 보물은 그대의 마음속에 있네</p>
+                            
+                            <div className="story-line space-y-1" style={visibleLines >= 5 ? {opacity:1, animation:'none'} : {animationDelay:'9s'}}>
+                                <p className="text-2xl text-[#8b0000] font-black">환영하네!</p>
+                                <p className="text-base">우리 낭만 해적단의 <br/>진정한 일원이 된 것을!</p>
+                            </div>
                         </div>
                     </div>
 

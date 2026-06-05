@@ -6,6 +6,7 @@ node_modules/
 !stamp_*.png
 !letter_parchment_light.png
 !event_banner.png
+!laughing_pirate_captain.png
 debug.js
 walkthrough.js
 screenshot.js
@@ -32,4 +33,3 @@ qr_swingship.png
 generate_action_qrs.py
 qr_chest.png
 qr_reward.png
-laughing_pirate_captain.png
