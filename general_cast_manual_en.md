@@ -13,6 +13,8 @@
   (해적 스탬프랠리에 참여해 보시겠어요?)
 * **"You can scan this QR code to register your name and start the adventure."**  
   (이 QR 코드를 스캔하여 이름을 등록하고 모험을 시작하실 수 있습니다.)
+* **"Please enter your name under 'Enter adventurer's name' and tap 'Start Adventure'."**  
+  ('Enter adventurer's name' 칸에 이름을 적고 'Start Adventure'를 눌러주세요.)
 
 ### 진행 방식 설명
 * **"You need to collect 3 stamps by scanning QR codes at these rides:"**  
@@ -24,8 +26,10 @@
 ### 보물상자 및 보상 안내
 * **"After collecting all 3 stamps, scan the Treasure Chest QR code at the Waterground plaza fence in front of the Garden Stage to get your certificate."**  
   (스탬프 3개를 다 모은 뒤, 가든스테이지 앞 광장 워터그라운드 울타리에서 보물상자 QR을 스캔해 임명장을 받으세요.)
-* **"Show your certificate screen at 'Rainbow Cafe'. Scan the staff's master QR code to verify it and get your pirate weapon toy!"**  
-  (레인보우카페에 임명장 화면을 보여주시고, 직원의 마스터 QR 코드를 스캔하여 확인을 마친 뒤 해적 무기 장난감을 선물로 받으세요!)
+* **"Show your certificate screen at 'Rainbow Cafe'. Click 'Claim Weapon' and scan the staff's master QR code to verify."**  
+  (레인보우카페에 임명장 화면을 보여주시고, '무기 수령하기(Claim Weapon)'를 누른 뒤 직원의 마스터 QR 코드를 스캔하여 확인해 주세요.)
+* **"Once scanned, a fireworks animation with a 1-minute timer will appear. Please show this animated screen to the cafe staff."**  
+  (스캔하면 1분 타이머와 함께 폭죽 애니메이션이 뜹니다. 이 움직이는 화면을 카페 직원에게 보여주세요.)
 
 ---
 
@@ -50,3 +54,7 @@
 * **"I will reset your progress. Just a moment, please."**  
   (진행 상태를 초기화해 드리겠습니다. 잠시만 기다려 주세요.)  
   👉 *지도 화면에서 고객 닉네임을 5번 터치하여 [초기화 실행]을 눌러줍니다.*
+
+### Q4. 영어가 아닌 한국어로 나옵니다. / How to switch language to English?
+* **"You can change the language to English by tapping the 'English' or 'EN' button at the top-right of the screen."**  
+  (화면 우측 상단의 'English' 또는 'EN' 버튼을 누르면 영어로 전환됩니다.)
