@@ -280,7 +280,7 @@
                             setStep('ending');
                         } else if (mode === 'reward') {
                             saveProgress(stamps, null, true);
-                            alert("⚓ [낭만 해적단] 보상 수령이 완료되었습니다!\n이 화면을 직원에게 보여주시고 해적단원의 무기를 수령하세요!");
+                            alert("⚓ [낭만 해적단] 보상 수령이 완료되었습니다!\n확인을 누르고 나타나는 폭죽 애니메이션 화면을 직원에게 보여주세요!");
                         } else if (['swingship', 'splash', 'flume'].includes(mode)) {
                             unlockStamp(mode);
                         }
@@ -353,7 +353,7 @@
                             if (isLegacy || isURL) {
                                 stopScanner();
                                 saveProgress(stamps, null, true);
-                                alert("⚓ [낭만 해적단] 보상 수령이 완료되었습니다!\n이 화면을 직원에게 보여주시고 해적단원의 무기를 수령하세요!");
+                                alert("⚓ [낭만 해적단] 보상 수령이 완료되었습니다!\n확인을 누르고 나타나는 폭죽 애니메이션 화면을 직원에게 보여주세요!");
                                 return;
                             }
                         } else if (['swingship', 'splash', 'flume'].includes(scanModeRef.current)) {
@@ -462,7 +462,7 @@
                         if (currentNickname && hasAllStamps) {
                             // Valid user who finished the adventure: claim reward
                             saveProgress(currentStamps, 'ending', true);
-                            alert("⚔️ [낭만 해적단] 낭만 해적단원의 무기 수령이 완료되었다! 위대한 낭만 해적이 탄생했도다!");
+                            alert("⚓ [낭만 해적단] 보상 수령이 완료되었습니다!\n확인을 누르고 나타나는 폭죽 애니메이션 화면을 직원에게 보여주세요!");
                         } else {
                             // Invalid scan attempt
                              alert("⚔️ [낭만 해적단] 어허! 아직 보물을 발견하고 임명장도 받지 못한 풋내기 모험가로군! 거울미로의 캐스트 단원들도 자격 없는 자에겐 무기를 내주지 않는다네. 얼른 보물부터 찾고 오게나!");
@@ -615,7 +615,7 @@
             ) : null;
 
             const elapsedSeconds = secondsAgo;
-            const isJustClaimed = isClaimed && elapsedSeconds !== null && elapsedSeconds < 10;
+            const isJustClaimed = isClaimed && elapsedSeconds !== null && elapsedSeconds < 60;
 
             const successAnimationJSX = isJustClaimed ? (
                 <div className="fixed inset-0 z-[200] bg-black/85 flex flex-col items-center justify-center p-6 text-center animate-[fadeIn_0.3s_ease-out]">
@@ -641,11 +641,11 @@
                         
                         <div className="my-6 py-4 px-6 bg-green-50 rounded-2xl border-2 border-green-500/30 flex flex-col items-center justify-center shadow-inner">
                             <span className="text-xs font-bold text-green-600 uppercase tracking-widest mb-1">실시간 타이머</span>
-                            <span className="text-4xl font-black text-green-700 font-mono animate-pulse">방금 전 ({10 - elapsedSeconds}초)</span>
+                            <span className="text-4xl font-black text-green-700 font-mono animate-pulse">방금 전 ({60 - elapsedSeconds}초)</span>
                         </div>
                         
                         <p className="text-sm font-bold text-[#3d2b1f] keep-all leading-relaxed">
-                            이 화면을 레인보우카페 직원에게 보여주시고<br/>
+                            이 애니메이션이 나오는 화면을 레인보우카페 직원에게 보여주시고<br/>
                             <strong>해적단원의 무기</strong>를 수령해 주세요!
                         </p>
                     </div>
@@ -977,11 +977,11 @@
                                 </p>
                                 
                                 <button 
-                                    onClick={() => setShowPasscodeModal(true)} 
+                                    onClick={() => startScanner('reward')} 
                                     className="mt-6 mx-auto px-8 py-4 bg-[#3d2b1f] text-white rounded-xl font-bold text-base shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2 w-auto"
                                 >
-                                    <i data-lucide="check" style={{width: 20, height: 20}}></i>
-                                    수령 확인 (스태프용)
+                                    <i data-lucide="camera" style={{width: 20, height: 20}}></i>
+                                    무기 수령하기
                                 </button>
                             </div>
                         ) : (
