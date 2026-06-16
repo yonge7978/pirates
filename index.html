@@ -280,7 +280,7 @@
                             setStep('ending');
                         } else if (mode === 'reward') {
                             saveProgress(stamps, null, true);
-                            alert("⚓ [낭만 해적단] 보상 수령이 완료되었습니다!\n확인을 누르고 나타나는 폭죽 애니메이션 화면을 직원에게 보여주세요!");
+                            alert("낭만 해적단의 보상을 수령합니다.\n닫기 버튼을 누르고 나타나는 화면을 1분내로 직원에게 보여주세요");
                         } else if (['swingship', 'splash', 'flume'].includes(mode)) {
                             unlockStamp(mode);
                         }
@@ -353,7 +353,7 @@
                             if (isLegacy || isURL) {
                                 stopScanner();
                                 saveProgress(stamps, null, true);
-                                alert("⚓ [낭만 해적단] 보상 수령이 완료되었습니다!\n확인을 누르고 나타나는 폭죽 애니메이션 화면을 직원에게 보여주세요!");
+                                alert("낭만 해적단의 보상을 수령합니다.\n닫기 버튼을 누르고 나타나는 화면을 1분내로 직원에게 보여주세요");
                                 return;
                             }
                         } else if (['swingship', 'splash', 'flume'].includes(scanModeRef.current)) {
@@ -462,7 +462,7 @@
                         if (currentNickname && hasAllStamps) {
                             // Valid user who finished the adventure: claim reward
                             saveProgress(currentStamps, 'ending', true);
-                            alert("⚓ [낭만 해적단] 보상 수령이 완료되었습니다!\n확인을 누르고 나타나는 폭죽 애니메이션 화면을 직원에게 보여주세요!");
+                            alert("낭만 해적단의 보상을 수령합니다.\n닫기 버튼을 누르고 나타나는 화면을 1분내로 직원에게 보여주세요");
                         } else {
                             // Invalid scan attempt
                              alert("⚔️ [낭만 해적단] 어허! 아직 보물을 발견하고 임명장도 받지 못한 풋내기 모험가로군! 거울미로의 캐스트 단원들도 자격 없는 자에겐 무기를 내주지 않는다네. 얼른 보물부터 찾고 오게나!");
