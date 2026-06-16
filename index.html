@@ -516,6 +516,19 @@
 
             const allMainRidesDone = stamps.swingship && stamps.splash && stamps.flume;
 
+            const resetModalJSX = isResetConfirmOpen ? (
+                <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-6 z-[120]">
+                    <div className="bg-white rounded-2xl p-6 w-full max-w-xs text-center shadow-2xl">
+                        <h4 className="text-lg font-black mb-2 text-[#3d2b1f] keep-all">데이터 완전 초기화</h4>
+                        <p className="text-sm text-gray-600 mb-6 keep-all leading-relaxed">데모 시연 데이터를 모두 삭제하고<br/>첫 화면으로 돌아가시겠습니까?</p>
+                        <div className="flex gap-2">
+                            <button onClick={() => setIsResetConfirmOpen(false)} className="flex-1 py-3 rounded-xl bg-gray-100 text-gray-500 font-bold">취소</button>
+                            <button onClick={executeHardReset} className="flex-1 py-3 rounded-xl bg-[#8b0000] text-white font-bold shadow-md">초기화 실행</button>
+                        </div>
+                    </div>
+                </div>
+            ) : null;
+
             if (step === 'intro') return (
                 <div className="mobile-app-container font-ko flex flex-col items-center justify-center p-8 text-center overflow-hidden">
                     <div className="absolute top-8 left-8 opacity-10 rotate-[-15deg]">
@@ -564,6 +577,7 @@
                             모험 시작하기
                         </button>
                     </div>
+                    {resetModalJSX}
                 </div>
             );
 
@@ -739,6 +753,7 @@
                             </button>
                         </div>
                     )}
+                    {resetModalJSX}
                 </div>
             );
 
@@ -781,6 +796,7 @@
                             임명장 확인하기
                         </button>
                     </div>
+                    {resetModalJSX}
                 </div>
             );
 
@@ -888,18 +904,7 @@
                         </div>
                     )}
 
-                    {isResetConfirmOpen && (
-                        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-6 z-[120]">
-                            <div className="bg-white rounded-2xl p-6 w-full max-w-xs text-center shadow-2xl">
-                                <h4 className="text-lg font-black mb-2 text-[#3d2b1f]">데이터 완전 초기화</h4>
-                                <p className="text-sm text-gray-600 mb-6 keep-all leading-relaxed">데모 시연 데이터를 모두 삭제하고<br/>첫 화면으로 돌아가시겠습니까?</p>
-                                <div className="flex gap-2">
-                                    <button onClick={() => setIsResetConfirmOpen(false)} className="flex-1 py-3 rounded-xl bg-gray-100 text-gray-500 font-bold">취소</button>
-                                    <button onClick={executeHardReset} className="flex-1 py-3 rounded-xl bg-[#8b0000] text-white font-bold shadow-md">초기화 실행</button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                    {resetModalJSX}
                 </div>
             );
             return null;
