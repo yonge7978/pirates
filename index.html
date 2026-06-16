@@ -198,6 +198,177 @@
         const APP_ID = "lotte-world-pirates-2026";
         const ADMIN_CODE = "0619";
 
+        const TRANSLATIONS = {
+            ko: {
+                intro_desc: '"폭염에 지친 매직 포레스트...\n낭만 해적단이 엄청난 보물을\n숨겨두었다!" \n\n숨겨진 단서를 찾아\n보물의 주인이 되어라.',
+                intro_placeholder: "모험가 이름을 입력하세요",
+                intro_btn: "모험 시작하기",
+                pending_unlocked_title: "📌 첫 번째 표식 획득 대기 중!",
+                pending_unlocked_desc: (attName) => `[${attName}] 현장에서 접속하셨습니다.\n이름을 등록하고 모험을 시작하시면\n해당 표식이 지도에 즉시 기록됩니다!`,
+                
+                map_header_user: "모험가",
+                map_header_clues: "찾은 단서",
+                map_title: "파크 안 숨겨진 표식을 찾아\n보물에 더 가까워져라!",
+                map_desc: "각 단서를 터치하여 힌트를 확인하세요",
+                map_locked: "3개의 표식을 모두 찾아야\n최종 목적지의 위치가 나타납니다.",
+                map_unlocked_title: "보물 은닉처 발견!",
+                map_unlocked_desc: '"가든스테이지 앞에\n우리 단원들의 훈련장을 마련해뒀지!\n그 훈련장 주변 울타리를\n한번 샅샅이 수색해보게!"',
+                map_open_chest_btn: "보물 상자 열기",
+                
+                hint_title: (label) => label,
+                hint_btn_scan: "표식 인식하기",
+                hint_btn_back: "뒤로 돌아가기",
+                
+                scan_chest: "보물 상자의\nQR 코드를 인식시켜주세요",
+                scan_reward: "스태프용 보상 확인\nQR 코드를 인식시켜주세요",
+                scan_stamp: "해적단의\n표식 QR 코드를 인식시켜주세요",
+                scan_cancel: "취소하기",
+                
+                stamp_success_title: "표식 획득 성공!",
+                stamp_success_subtitle: "인증이 성공적으로 완료되었습니다.",
+                stamp_success_desc: (nick, att, label) => `${nick} 모험가여, 낭만 해적단의 표식이 모험 수첩에 무사히 기록되었네. 이제 보물에 한 걸음 더 가까워졌군!`,
+                
+                ending_line1: "마침내 찾아낸 보물 상자...",
+                ending_line2: "하지만 상자 안에는 보물 대신\n낡은 편지 한 장이 들어있었다네.",
+                ending_line3: '"더위에 지친 사람들을 구하기 위해\n망설임 없이 나선 그 열정과 용기."',
+                ending_line4: "진정한 보물은 그대의 마음속에 있네",
+                ending_line5_title: "환영하네!",
+                ending_line5_desc: "우리 낭만 해적단의 \n진정한 일원이 된 것을!",
+                ending_btn: "임명장 확인하기",
+                
+                reward_cert_title: "Certificate",
+                reward_cert_subtitle: "낭만 해적단 공식 임명장",
+                reward_cert_body: (nick) => `위 사람은 보물찾기로 위장된 \n낭만 해적단의 \n입단 테스트를 훌륭히 통과하였기에 \n정식 단원으로 임명함.`,
+                reward_cert_date: "임명 날짜",
+                reward_box_title: "보상을 수령하세요",
+                reward_box_desc: "현재 화면을 레인보우카페의 직원에게 보여주세요!\n낭만 해적단원의 무기를 지급해 드립니다!\n(1인 1회 한정, 중복 수령 불가)",
+                reward_btn_claim: "무기 수령하기",
+                reward_claimed_title: "보상 지급 완료",
+                reward_claimed_time: "수령 일시",
+                reward_btn_home: "처음 화면으로",
+                
+                alert_chest_unlocked: "⚓ [낭만 해적단] 보물상자의 자물쇠가 풀렸다! 상자 안을 확인해 보아라!",
+                alert_chest_locked: "🏴‍☠️ [낭만 해적단] 이런, 풋내기 모험가여! 지도에 숨겨진 3개의 표식을 모두 찾지도 못했는데 보물상자를 엿보다니! 썩 돌아가서 표식부터 찾아오거라! ⚓",
+                alert_reward_claimed: "낭만 해적단의 보상을 수령합니다.\n닫기 버튼을 누르고 나타나는 화면을 1분내로 직원에게 보여주세요",
+                alert_reward_locked: "⚔️ [낭만 해적단] 어허! 아직 보물을 발견하고 임명장도 받지 못한 풋내기 모험가로군! 거울미로의 캐스트 단원들도 자격 없는 자에겐 무기를 내주지 않는다네. 얼른 보물부터 찾고 오게나!",
+                alert_reset: "🧹 [낭만 해적단] 모든 모험 데이터가 리셋되었습니다. 초기 상태로 되돌아갑니다!",
+                
+                reset_title: "데이터 완전 초기화",
+                reset_body: "데모 시연 데이터를 모두 삭제하고\n첫 화면으로 돌아가시겠습니까?",
+                reset_cancel: "취소",
+                reset_confirm: "초기화 실행",
+                
+                timer_title: "실시간 타이머",
+                timer_just_now: (sec) => `방금 전 (${sec}초)`,
+                timer_show_staff: "이 애니메이션이 나오는 화면을 레인보우카페 직원에게 보여주시고\n해적단원의 무기를 수령해 주세요!",
+                
+                time_sec: "초 전 수령함",
+                time_min: "분 전 수령함",
+                time_hour: "시간 전 수령함",
+                time_day: "일 전 수령함",
+                
+                spot_names: {
+                    swingship: '파이러츠 스윙십',
+                    splash: '자이언트 스플래쉬',
+                    flume: '오거스 후룸'
+                },
+                mission_labels: {
+                    swingship: '첫 번째 표식',
+                    splash: '두 번째 표식',
+                    flume: '세 번째 표식'
+                },
+                mission_hints: {
+                    swingship: '우리가 타고 온 배 어때?\n너도 한번 타볼래? 더위가 아주 싹 가실거야!',
+                    splash: '땀에 젖은 그대여!\n이 참에 아예 물에 홀딱 젖어버리는 것이 어떤가?',
+                    flume: '오거들이 만든 뗏목도 꽤 훌륭하더군.. 물론 우리 낭만 해적단의 배에 비할 수 없지만 말이야'
+                }
+            },
+            en: {
+                intro_desc: '"Magic Forest, exhausted by the heat...\nThe Romantic Pirates have hidden\nan incredible treasure!"\n\nFind the hidden clues and\nbecome the owner of the treasure.',
+                intro_placeholder: "Enter adventurer's name",
+                intro_btn: "Start Adventure",
+                pending_unlocked_title: "📌 First Stamp Pending Unlocking!",
+                pending_unlocked_desc: (attName) => `You accessed from [${attName}].\nRegister your name and start the adventure\nto record this stamp on your map immediately!`,
+                
+                map_header_user: "Adventurer",
+                map_header_clues: "Clues Found",
+                map_title: "Find the hidden marks in the park\nand get closer to the treasure!",
+                map_desc: "Tap each clue to check its hint",
+                map_locked: "Find all 3 marks\nto reveal the final destination.",
+                map_unlocked_title: "Treasure Hideout Found!",
+                map_unlocked_desc: '"We prepared a training ground\nfor our crew in front of the Garden Stage!\nSearch the surrounding fence thoroughly!"',
+                map_open_chest_btn: "Open Treasure Chest",
+                
+                hint_title: (label) => label,
+                hint_btn_scan: "Scan Mark",
+                hint_btn_back: "Go Back",
+                
+                scan_chest: "Please scan the\nQR code on the Treasure Chest",
+                scan_reward: "Please scan the staff's\nreward verification QR code",
+                scan_stamp: "Please scan the\nQR code of the Pirate Mark",
+                scan_cancel: "Cancel",
+                
+                stamp_success_title: "Mark Claimed Successfully!",
+                stamp_success_subtitle: "Verification successfully completed.",
+                stamp_success_desc: (nick, att, label) => `Adventurer ${nick}, the Pirate Mark has been successfully recorded in your adventure journal. Now you are one step closer to the treasure!`,
+                
+                ending_line1: "The treasure chest finally found...",
+                ending_line2: "But inside the chest, instead of treasure,\nthere was an old letter.",
+                ending_line3: '"The passion and courage you showed\nto save people exhausted by the heat without hesitation."',
+                ending_line4: "The true treasure is inside your heart",
+                ending_line5_title: "Welcome!",
+                ending_line5_desc: "You are now a true member\nof our Romantic Pirates!",
+                ending_btn: "View Certificate",
+                
+                reward_cert_title: "Certificate",
+                reward_cert_subtitle: "Official Certificate of Romantic Pirates",
+                reward_cert_body: (nick) => `This person has successfully passed \nthe admission test of the Romantic Pirates \ndisguised as a treasure hunt, \nand is hereby appointed as an official member.`,
+                reward_cert_date: "Date of Issue",
+                reward_box_title: "Claim Your Reward",
+                reward_box_desc: "Show this screen to the staff at the Rainbow Cafe!\nWe will give you the pirate weapon toy!\n(Limit 1 per person, no duplicates)",
+                reward_btn_claim: "Claim Weapon",
+                reward_claimed_title: "Reward Issued",
+                reward_claimed_time: "Claimed Date",
+                reward_btn_home: "Go to Main Page",
+                
+                alert_chest_unlocked: "⚓ [Romantic Pirates] The lock on the treasure chest has been released! Check inside the chest!",
+                alert_chest_locked: "🏴‍☠️ [Romantic Pirates] Oh, novice adventurer! You haven't found all 3 marks on the map yet but you're peeking at the treasure chest? Go back and find the marks first! ⚓",
+                alert_reward_claimed: "Claiming the reward of the Romantic Pirates.\nDismiss this message and show the screen to the staff within 1 minute.",
+                alert_reward_locked: "⚔️ [Romantic Pirates] Oh! You are still a novice adventurer who hasn't found the treasure and received a certificate yet! The cast members do not give weapons to unqualified seekers. Find the treasure first!",
+                alert_reset: "🧹 [Romantic Pirates] All adventure data has been reset. Returning to the initial state!",
+                
+                reset_title: "Reset All Data",
+                reset_body: "Do you want to delete all demo data\nand return to the initial screen?",
+                reset_cancel: "Cancel",
+                reset_confirm: "Reset",
+                
+                timer_title: "Real-time Timer",
+                timer_just_now: (sec) => `Just now (${sec}s)`,
+                timer_show_staff: "Show this screen with the animation to the Rainbow Cafe staff\nand claim your pirate weapon toy!",
+                
+                time_sec: "s ago",
+                time_min: "m ago",
+                time_hour: "h ago",
+                time_day: "d ago",
+                
+                spot_names: {
+                    swingship: 'Pirates Swing Ship',
+                    splash: 'Giant Splash',
+                    flume: "Ogre's Flume"
+                },
+                mission_labels: {
+                    swingship: 'First Clue',
+                    splash: 'Second Clue',
+                    flume: 'Third Clue'
+                },
+                mission_hints: {
+                    swingship: "How about the ship we sailed in?\nWould you like to try it? It will drive away the heat!",
+                    splash: 'O, sweat-drenched soul!\nHow about getting completely soaked this time?',
+                    flume: "The ogre-made log raft is quite impressive.. though it doesn't compare to our ship."
+                }
+            }
+        };
+
         const MISSION_DATA = [
             { id: 'swingship', icon: '⚓', image: 'stamp_swingship.png', label: '첫 번째 표식', attraction: '파이러츠 스윙십', hint: '우리가 타고 온 배 어때?\n너도 한번 타볼래? 더위가 아주 싹 가실거야!' },
             { id: 'splash', icon: '🌊', image: 'stamp_splash.png', label: '두 번째 표식', attraction: '자이언트 스플래쉬', hint: '땀에 젖은 그대여!\n이 참에 아예 물에 홀딱 젖어버리는 것이 어떤가?' },
@@ -232,7 +403,15 @@
         };
 
         function App() {
+            const getInitialLanguage = () => {
+                const saved = localStorage.getItem(APP_ID + '_lang');
+                if (saved) return saved;
+                const browserLang = navigator.language || navigator.userLanguage;
+                return (browserLang && browserLang.startsWith('en')) ? 'en' : 'ko';
+            };
+
             const [step, setStep] = useState('intro');
+            const [lang, setLang] = useState(getInitialLanguage);
             const [nickname, setNickname] = useState('');
             const [pendingSpot, setPendingSpot] = useState(null);
             const [stamps, setStamps] = useState({ swingship: false, splash: false, flume: false });
@@ -267,6 +446,13 @@
             const CHEST_QR_DATA = "OPEN_TREASURE_CHEST_2026";
             const scanModeRef = useRef(null);
 
+            const t = TRANSLATIONS[lang];
+
+            const changeLang = (newLang) => {
+                setLang(newLang);
+                localStorage.setItem(APP_ID + '_lang', newLang);
+            };
+
             const handleSecretTap = () => {
                 if (secretTapTimeoutRef.current) clearTimeout(secretTapTimeoutRef.current);
                 secretTapTimeoutRef.current = setTimeout(() => setSecretTapCount(0), 2000);
@@ -279,7 +465,7 @@
                         if (mode === 'chest') {
                             setStep('ending');
                         } else if (mode === 'reward') {
-                            alert("낭만 해적단의 보상을 수령합니다.\n닫기 버튼을 누르고 나타나는 화면을 1분내로 직원에게 보여주세요");
+                            alert(t.alert_reward_claimed);
                             saveProgress(stamps, null, true);
                         } else if (['swingship', 'splash', 'flume'].includes(mode)) {
                             unlockStamp(mode);
@@ -352,7 +538,7 @@
                             const isURL = code.data.includes('action=reward');
                             if (isLegacy || isURL) {
                                 stopScanner();
-                                alert("낭만 해적단의 보상을 수령합니다.\n닫기 버튼을 누르고 나타나는 화면을 1분내로 직원에게 보여주세요");
+                                alert(t.alert_reward_claimed);
                                 saveProgress(stamps, null, true);
                                 return;
                             }
@@ -391,6 +577,8 @@
             };
 
             useEffect(() => {
+                const currentLang = getInitialLanguage();
+                const tCurrent = TRANSLATIONS[currentLang];
                 const savedData = localStorage.getItem(APP_ID);
                 let currentNickname = "";
                 let currentStamps = stamps;
@@ -448,10 +636,10 @@
                         if (currentNickname && hasAllStamps) {
                             // Valid user who collected all stamps: unlock chest
                             setStep('ending');
-                            alert("⚓ [낭만 해적단] 보물상자의 자물쇠가 풀렸다! 상자 안을 확인해 보아라!");
+                            alert(tCurrent.alert_chest_unlocked);
                         } else {
                             // Invalid scan attempt
-                            alert("🏴‍☠️ [낭만 해적단] 이런, 풋내기 모험가여! 지도에 숨겨진 3개의 표식을 모두 찾지도 못했는데 보물상자를 엿보다니! 썩 돌아가서 표식부터 찾아오거라! ⚓");
+                            alert(tCurrent.alert_chest_locked);
                             if (currentNickname) {
                                 setStep('map');
                             } else {
@@ -461,11 +649,11 @@
                     } else if (action === 'reward') {
                         if (currentNickname && hasAllStamps) {
                             // Valid user who finished the adventure: claim reward
-                            alert("낭만 해적단의 보상을 수령합니다.\n닫기 버튼을 누르고 나타나는 화면을 1분내로 직원에게 보여주세요");
+                            alert(tCurrent.alert_reward_claimed);
                             saveProgress(currentStamps, 'ending', true);
                         } else {
                             // Invalid scan attempt
-                             alert("⚔️ [낭만 해적단] 어허! 아직 보물을 발견하고 임명장도 받지 못한 풋내기 모험가로군! 거울미로의 캐스트 단원들도 자격 없는 자에겐 무기를 내주지 않는다네. 얼른 보물부터 찾고 오게나!");
+                             alert(tCurrent.alert_reward_locked);
                             if (currentNickname) {
                                 setStep('map');
                             } else {
@@ -474,7 +662,7 @@
                         }
                     } else if (action === 'reset') {
                         localStorage.removeItem(APP_ID);
-                        alert("🧹 [낭만 해적단] 모든 모험 데이터가 리셋되었습니다. 초기 상태로 되돌아갑니다!");
+                        alert(tCurrent.alert_reset);
                         window.location.href = window.location.pathname;
                         return;
                     }
@@ -556,11 +744,13 @@
             const resetModalJSX = isResetConfirmOpen ? (
                 <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-6 z-[120]">
                     <div className="bg-white rounded-2xl p-6 w-full max-w-xs text-center shadow-2xl">
-                        <h4 className="text-lg font-black mb-2 text-[#3d2b1f] keep-all">데이터 완전 초기화</h4>
-                        <p className="text-sm text-gray-600 mb-6 keep-all leading-relaxed">데모 시연 데이터를 모두 삭제하고<br/>첫 화면으로 돌아가시겠습니까?</p>
+                        <h4 className="text-lg font-black mb-2 text-[#3d2b1f] keep-all">{t.reset_title}</h4>
+                        <p className="text-sm text-gray-600 mb-6 keep-all leading-relaxed">
+                            {t.reset_body.split('\n').map((line, idx) => <React.Fragment key={idx}>{line}<br/></React.Fragment>)}
+                        </p>
                         <div className="flex gap-2">
-                            <button onClick={() => setIsResetConfirmOpen(false)} className="flex-1 py-3 rounded-xl bg-gray-100 text-gray-500 font-bold">취소</button>
-                            <button onClick={executeHardReset} className="flex-1 py-3 rounded-xl bg-[#8b0000] text-white font-bold shadow-md">초기화 실행</button>
+                            <button onClick={() => setIsResetConfirmOpen(false)} className="flex-1 py-3 rounded-xl bg-gray-100 text-gray-500 font-bold">{t.reset_cancel}</button>
+                            <button onClick={executeHardReset} className="flex-1 py-3 rounded-xl bg-[#8b0000] text-white font-bold shadow-md">{t.reset_confirm}</button>
                         </div>
                     </div>
                 </div>
@@ -636,24 +826,52 @@
                     </div>
                     <div className="bg-[#fdf5e6] p-8 rounded-3xl border-8 border-double border-[#8b0000] shadow-[0_0_50px_rgba(212,175,55,0.8)] max-w-sm w-full animate-[scaleUp_0.4s_cubic-bezier(0.175,0.885,0.32,1.25)] relative overflow-hidden">
                         <div className="absolute top-2 left-2 opacity-[0.05]"><i data-lucide="sparkles" style={{width: 50, height: 50}}></i></div>
-                        <h3 className="text-3xl font-black text-[#8b0000] mb-2 tracking-wider animate-bounce">🎉 지금 보상을 받으세요!</h3>
-                        <p className="text-xs text-gray-500 font-bold mb-6">스태프 확인이 성공적으로 완료되었습니다.</p>
+                        <h3 className="text-3xl font-black text-[#8b0000] mb-2 tracking-wider animate-bounce">
+                            {lang === 'ko' ? "🎉 지금 보상을 받으세요!" : "🎉 Claim Your Reward Now!"}
+                        </h3>
+                        <p className="text-xs text-gray-500 font-bold mb-6">
+                            {lang === 'ko' ? "스태프 확인이 성공적으로 완료되었습니다." : "Staff verification successfully completed."}
+                        </p>
                         
                         <div className="my-6 py-4 px-6 bg-green-50 rounded-2xl border-2 border-green-500/30 flex flex-col items-center justify-center shadow-inner">
-                            <span className="text-xs font-bold text-green-600 uppercase tracking-widest mb-1">실시간 타이머</span>
-                            <span className="text-4xl font-black text-green-700 font-mono animate-pulse">방금 전 ({60 - elapsedSeconds}초)</span>
+                            <span className="text-xs font-bold text-green-600 uppercase tracking-widest mb-1">{t.timer_title}</span>
+                            <span className="text-4xl font-black text-green-700 font-mono animate-pulse">{t.timer_just_now(60 - elapsedSeconds)}</span>
                         </div>
                         
                         <p className="text-sm font-bold text-[#3d2b1f] keep-all leading-relaxed">
-                            이 애니메이션이 나오는 화면을 레인보우카페 직원에게 보여주시고<br/>
-                            <strong>해적단원의 무기</strong>를 수령해 주세요!
+                            {lang === 'ko' ? (
+                                <>
+                                    이 애니메이션이 나오는 화면을 레인보우카페 직원에게 보여주시고<br/>
+                                    <strong>해적단원의 무기</strong>를 수령해 주세요!
+                                </>
+                            ) : (
+                                <>
+                                    Show this screen with the animation to the Rainbow Cafe staff<br/>
+                                    and claim your <strong>pirate weapon toy</strong>!
+                                </>
+                            )}
                         </p>
                     </div>
                 </div>
             ) : null;
 
             if (step === 'intro') return (
-                <div className="mobile-app-container font-ko flex flex-col items-center justify-center p-8 text-center overflow-hidden">
+                <div className="mobile-app-container font-ko flex flex-col items-center justify-center p-8 text-center overflow-hidden relative">
+                    <div className="absolute top-4 right-4 z-[100] flex gap-2">
+                        <button 
+                            onClick={() => changeLang('ko')} 
+                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border ${lang === 'ko' ? 'bg-[#8b0000] text-white border-[#8b0000] shadow-md' : 'bg-white/80 text-[#3d2b1f] border-gray-300'}`}
+                        >
+                            한글
+                        </button>
+                        <button 
+                            onClick={() => changeLang('en')} 
+                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border ${lang === 'en' ? 'bg-[#8b0000] text-white border-[#8b0000] shadow-md' : 'bg-white/80 text-[#3d2b1f] border-gray-300'}`}
+                        >
+                            English
+                        </button>
+                    </div>
+
                     <div className="absolute top-8 left-8 opacity-10 rotate-[-15deg]">
                         <i data-lucide="compass" style={{width: 80, height: 80}}></i>
                     </div>
@@ -669,18 +887,14 @@
 
                     <div className="parchment-main p-10 mb-12 relative">
                         <p className="text-xl leading-relaxed text-[#5d4037] keep-all font-bold italic">
-                            "폭염에 지친 매직 포레스트...<br/>
-                            낭만 해적단이 엄청난 보물을<br/>숨겨두었다!" <br/><br/>
-                            숨겨진 단서를 찾아<br/>보물의 주인이 되어라.
+                            {t.intro_desc.split('\n').map((line, idx) => <React.Fragment key={idx}>{line}<br/></React.Fragment>)}
                         </p>
                     </div>
 
                     {pendingSpot && (
                         <div className="mb-6 p-5 rounded-2xl border-2 border-dashed border-[#8b0000] bg-[#fdf6e2]/95 text-[#8b0000] font-bold text-base leading-relaxed animate-pulse shadow-md w-full max-w-md relative z-10 keep-all">
-                            📌 <strong>첫 번째 표식 획득 대기 중!</strong><br/>
-                            [{SPOT_NAMES[pendingSpot]}] 현장에서 접속하셨습니다.<br/>
-                            이름을 등록하고 모험을 시작하시면<br/>
-                            해당 표식이 지도에 즉시 기록됩니다!
+                            📌 <strong>{t.pending_unlocked_title}</strong><br/>
+                            {t.pending_unlocked_desc(t.spot_names[pendingSpot]).split('\n').map((line, idx) => <React.Fragment key={idx}>{line}<br/></React.Fragment>)}
                         </div>
                     )}
 
@@ -689,7 +903,7 @@
                             <input 
                                 type="text" value={nickname} 
                                 onChange={(e)=>setNickname(e.target.value)}
-                                placeholder="모험가 이름을 입력하세요" 
+                                placeholder={t.intro_placeholder} 
                                 className="w-full p-5 rounded-xl border-2 border-[#3d2b1f] bg-white/90 text-center font-bold text-xl outline-none"
                             />
                         </div>
@@ -697,7 +911,7 @@
                             onClick={startAdventure}
                             className="wood-btn text-white font-black py-6 px-8 rounded-xl w-full text-2xl"
                         >
-                            모험 시작하기
+                            {t.intro_btn}
                         </button>
                     </div>
                     {resetModalJSX}
@@ -712,34 +926,50 @@
                                 <i data-lucide="compass" className="text-white" style={{width: 24, height: 24}}></i>
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-[#8b0000] tracking-widest leading-none mb-1 uppercase">모험가</p>
+                                <p className="text-[10px] font-bold text-[#8b0000] tracking-widest leading-none mb-1 uppercase">{t.map_header_user}</p>
                                 <h2 onClick={handleResetTap} className="text-2xl font-black text-[#3d2b1f] cursor-default select-none">{nickname}</h2>
                             </div>
                         </div>
-                        <div className="text-right">
-                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">찾은 단서</p>
-                            <p className="text-4xl font-en gold-text leading-none">
-                                {Object.values(stamps).filter(v => v).length}<span className="text-xl text-gray-400">/3</span>
-                            </p>
+                        <div className="text-right flex flex-col items-end gap-2">
+                            <div className="flex gap-1.5 mb-1">
+                                <button 
+                                    onClick={() => changeLang('ko')} 
+                                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all border ${lang === 'ko' ? 'bg-[#8b0000] text-white border-[#8b0000]' : 'bg-white/80 text-[#3d2b1f] border-gray-300'}`}
+                                >
+                                    한글
+                                </button>
+                                <button 
+                                    onClick={() => changeLang('en')} 
+                                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all border ${lang === 'en' ? 'bg-[#8b0000] text-white border-[#8b0000]' : 'bg-white/80 text-[#3d2b1f] border-gray-300'}`}
+                                >
+                                    EN
+                                </button>
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">{t.map_header_clues}</p>
+                                <p className="text-4xl font-en gold-text leading-none">
+                                    {Object.values(stamps).filter(v => v).length}<span className="text-xl text-gray-400">/3</span>
+                                </p>
+                            </div>
                         </div>
                     </header>
 
                     <div className="parchment p-6 rounded-xl mb-8 relative overflow-hidden">
                         <h3 className="text-xl font-bold mb-2 text-center text-[#3d2b1f] keep-all relative z-10">
-                           파크 안 숨겨진 표식을 찾아<br/>보물에 더 가까워져라!
+                            {t.map_title.split('\n').map((line, idx) => <React.Fragment key={idx}>{line}<br/></React.Fragment>)}
                         </h3>
-                        <p className="text-xs opacity-60 mb-6 text-center keep-all relative z-10 font-bold">각 단서를 터치하여 힌트를 확인하세요</p>
+                        <p className="text-xs opacity-60 mb-6 text-center keep-all relative z-10 font-bold">{t.map_desc}</p>
                         <div className="flex justify-around gap-2 mb-4 relative z-10">
                             {MISSION_DATA.map(m => (
                                 <div key={m.id} onClick={() => setShowHint(m)} className="flex flex-col items-center gap-2">
                                     <div className={`stamp-circle transition-all btn-active cursor-pointer overflow-hidden ${stamps[m.id] ? 'border-[#8b0000] scale-105' : 'border-[#3d2b1f]/20 grayscale opacity-40'}`}>
                                         {m.image ? (
-                                            <img src={m.image} className="w-full h-full object-contain p-1" alt={m.label} />
+                                            <img src={m.image} className="w-full h-full object-contain p-1" alt={t.mission_labels[m.id]} />
                                         ) : (
                                             <span className="stamp-ink">{m.icon}</span>
                                         )}
                                     </div>
-                                    <span className="text-[10px] font-bold opacity-60">{m.label}</span>
+                                    <span className="text-[10px] font-bold opacity-60">{t.mission_labels[m.id]}</span>
                                 </div>
                             ))}
                         </div>
@@ -748,21 +978,20 @@
                     <div className="flex-grow flex flex-col justify-center">
                         {allMainRidesDone ? (
                             <div key="treasure-hideout" className="p-8 rounded-3xl border-4 border-[#8b0000] bg-white/80 text-center animate-pulse shadow-[0_20px_50px_rgba(139,0,0,0.3)] relative overflow-hidden">
-                                <h3 className="text-2xl font-black mb-4 text-[#3d2b1f] keep-all">보물 은닉처 발견!</h3>
+                                <h3 className="text-2xl font-black mb-4 text-[#3d2b1f] keep-all">{t.map_unlocked_title}</h3>
                                 <div className="bg-[#fdf5e6] p-5 rounded-2xl border-2 border-dashed border-[#8b0000]/30 mb-6 shadow-inner">
                                     <p className="text-lg font-bold text-[#8b0000] italic keep-all">
-                                        "가든스테이지 앞에<br/>
-                                        우리 단원들의 훈련장을 마련해뒀지!<br/>
-                                        그 훈련장 주변 울타리를<br/>
-                                        한번 샅샅이 수색해보게!"
+                                        {t.map_unlocked_desc.split('\n').map((line, idx) => <React.Fragment key={idx}>{line}<br/></React.Fragment>)}
                                     </p>
                                 </div>
-                                <button onClick={() => startScanner('chest')} className="wood-btn text-white font-black py-5 px-8 rounded-2xl w-full text-xl">보물 상자 열기</button>
+                                <button onClick={() => startScanner('chest')} className="wood-btn text-white font-black py-5 px-8 rounded-2xl w-full text-xl">{t.map_open_chest_btn}</button>
                             </div>
                         ) : (
                             <div key="locked-map-info" className="p-8 text-center bg-[#3d2b1f]/5 rounded-3xl border-2 border-dashed border-[#3d2b1f]/10">
                                 <i data-lucide="lock" className="mx-auto mb-4 text-[#3d2b1f]/30" style={{width: 48, height: 48}}></i>
-                                <p className="text-base font-bold text-[#3d2b1f]/40 keep-all">3개의 표식을 모두 찾아야<br/>최종 목적지의 위치가 나타납니다.</p>
+                                <p className="text-base font-bold text-[#3d2b1f]/40 keep-all">
+                                    {t.map_locked.split('\n').map((line, idx) => <React.Fragment key={idx}>{line}<br/></React.Fragment>)}
+                                </p>
                             </div>
                         )}
                     </div>
@@ -774,8 +1003,8 @@
                                     <span className="stamp-ink">{showHint.icon}</span>
                                 </div>
                                 <div className="mt-8">
-                                    <h4 className="text-lg font-black mb-2 text-[#8b0000]">{showHint.label}</h4>
-                                    <p className="text-xl mb-10 text-[#3d2b1f] font-bold italic keep-all leading-relaxed">"{showHint.hint}"</p>
+                                    <h4 className="text-lg font-black mb-2 text-[#8b0000]">{t.mission_labels[showHint.id]}</h4>
+                                    <p className="text-xl mb-10 text-[#3d2b1f] font-bold italic keep-all leading-relaxed">"{t.mission_hints[showHint.id]}"</p>
                                     <div className="flex flex-col gap-4">
                                         <button 
                                             onClick={() => {
@@ -785,9 +1014,9 @@
                                             className="wood-btn text-white py-5 rounded-2xl font-black flex items-center justify-center gap-3 text-lg btn-active"
                                         >
                                             <i data-lucide="camera" style={{width: 24, height: 24}}></i>
-                                            표식 인식하기
+                                            {t.hint_btn_scan}
                                         </button>
-                                        <button onClick={()=>setShowHint(null)} className="mt-4 text-[#3d2b1f] font-bold text-sm bg-[#3d2b1f]/5 py-4 rounded-xl">뒤로 돌아가기</button>
+                                        <button onClick={()=>setShowHint(null)} className="mt-4 text-[#3d2b1f] font-bold text-sm bg-[#3d2b1f]/5 py-4 rounded-xl">{t.hint_btn_back}</button>
                                     </div>
                                 </div>
                             </div>
@@ -805,8 +1034,8 @@
                                     <i data-lucide="anchor" style={{width: 40, height: 40}}></i>
                                 </div>
 
-                                <h3 className="text-2xl font-black text-[#8b0000] tracking-wider mb-2">표식 획득 성공!</h3>
-                                <p className="text-xs text-gray-500 mb-6 font-bold">인증이 성공적으로 완료되었습니다.</p>
+                                <h3 className="text-2xl font-black text-[#8b0000] tracking-wider mb-2">{t.stamp_success_title}</h3>
+                                <p className="text-xs text-gray-500 mb-6 font-bold">{t.stamp_success_subtitle}</p>
 
                                 {/* Stamp Animation Container */}
                                 <div className="relative w-44 h-44 my-4 flex items-center justify-center bg-white/20 rounded-full shadow-inner border border-[#3d2b1f]/5">
@@ -825,13 +1054,13 @@
 
                                 <div className="mt-6 mb-8 text-[#3d2b1f] keep-all">
                                     <p className="text-lg font-black mb-1 text-[#8b0000]">
-                                        {MISSION_DATA.find(m => m.id === newlyUnlockedStamp).attraction}
+                                        {t.spot_names[newlyUnlockedStamp]}
                                     </p>
                                     <p className="text-[10px] font-bold text-gray-500/60 uppercase tracking-wider mb-2">
-                                        {MISSION_DATA.find(m => m.id === newlyUnlockedStamp).label}
+                                        {t.mission_labels[newlyUnlockedStamp]}
                                     </p>
                                     <p className="text-sm font-bold text-[#5d4037] leading-relaxed mt-2">
-                                        {nickname} 모험가여, 낭만 해적단의 표식이 모험 수첩에 무사히 기록되었네. 이제 보물에 한 걸음 더 가까워졌군!
+                                        {t.stamp_success_desc(nickname, t.spot_names[newlyUnlockedStamp], t.mission_labels[newlyUnlockedStamp])}
                                     </p>
                                 </div>
 
@@ -843,7 +1072,7 @@
                                     }} 
                                     className="wood-btn text-white font-black py-4 px-8 rounded-xl w-full text-lg"
                                 >
-                                    뒤로 돌아가기
+                                    {t.hint_btn_back}
                                 </button>
                             </div>
                         </div>
@@ -858,13 +1087,20 @@
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-[#d4af37] rounded-2xl animate-pulse"></div>
                             </div>
                             <p onClick={handleSecretTap} className="text-white mt-8 text-lg font-bold text-center keep-all font-ko select-none">
-                                {scanModeRef.current === 'chest' && <>보물 상자의<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
-                                {scanModeRef.current === 'reward' && <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
+                                {scanModeRef.current === 'chest' && (
+                                    lang === 'ko' 
+                                        ? <>보물 상자의<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>
+                                        : <>Please scan the<br/><span className="text-[#d4af37]">QR code</span> of the Treasure Chest</>
+                                )}
+                                {scanModeRef.current === 'reward' && (
+                                    lang === 'ko'
+                                        ? <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>
+                                        : <>Please scan the staff's<br/><span className="text-[#d4af37]">verification QR code</span></>
+                                )}
                                 {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && (
-                                    <>
-                                        해적단의<br/>
-                                        <span className="text-[#d4af37]">표식 QR 코드</span>를 인식시켜주세요
-                                    </>
+                                    lang === 'ko'
+                                        ? <>해적단의<br/><span className="text-[#d4af37]">표식 QR 코드</span>를 인식시켜주세요</>
+                                        : <>Please scan the pirate's<br/><span className="text-[#d4af37]">Mark QR code</span></>
                                 )}
                             </p>
 
@@ -872,15 +1108,13 @@
                                 onClick={stopScanner}
                                 className="mt-8 px-8 py-3 bg-white/10 text-white rounded-full font-bold border border-white/20 text-sm"
                             >
-                                취소하기
+                                {t.scan_cancel}
                             </button>
                         </div>
                     )}
                     {resetModalJSX}
                 </div>
             );
-
-
 
             if (step === 'ending') return (
                 <div 
@@ -894,18 +1128,20 @@
                         </div>
                         
                         <div className="relative z-10 space-y-6">
-                            <p className="story-line text-xl font-black" style={visibleLines >= 1 ? {opacity:1, animation:'none'} : {animationDelay:'0.5s'}}>마침내 찾아낸 보물 상자...</p>
-                            <p className="story-line text-sm text-[#2c1e13]/80" style={visibleLines >= 2 ? {opacity:1, animation:'none'} : {animationDelay:'2s'}}>하지만 상자 안에는 보물 대신<br/>낡은 편지 한 장이 들어있었다네.</p>
+                            <p className="story-line text-xl font-black" style={visibleLines >= 1 ? {opacity:1, animation:'none'} : {animationDelay:'0.5s'}}>{t.ending_line1}</p>
+                            <p className="story-line text-sm text-[#2c1e13]/80" style={visibleLines >= 2 ? {opacity:1, animation:'none'} : {animationDelay:'2s'}}>
+                                {t.ending_line2.split('\n').map((line, idx) => <React.Fragment key={idx}>{line}<br/></React.Fragment>)}
+                            </p>
                             
                             <div className="py-3 px-4 border-y border-dashed border-[#8b0000]/20 story-line italic text-base relative" style={visibleLines >= 3 ? {opacity:1, animation:'none'} : {animationDelay:'4.5s'}}>
-                                "더위에 지친 사람들을 구하기 위해<br/>망설임 없이 나선 그 열정과 용기."
+                                {t.ending_line3.split('\n').map((line, idx) => <React.Fragment key={idx}>{line}<br/></React.Fragment>)}
                             </div>
 
-                            <p className="story-line text-lg text-[#8b0000] italic font-black" style={visibleLines >= 4 ? {opacity:1, animation:'none'} : {animationDelay:'7s'}}>진정한 보물은 그대의 마음속에 있네</p>
+                            <p className="story-line text-lg text-[#8b0000] italic font-black" style={visibleLines >= 4 ? {opacity:1, animation:'none'} : {animationDelay:'7s'}}>{t.ending_line4}</p>
                             
                             <div className="story-line space-y-1" style={visibleLines >= 5 ? {opacity:1, animation:'none'} : {animationDelay:'9s'}}>
-                                <p className="text-2xl text-[#8b0000] font-black">환영하네!</p>
-                                <p className="text-base">우리 낭만 해적단의 <br/>진정한 일원이 된 것을!</p>
+                                <p className="text-2xl text-[#8b0000] font-black">{t.ending_line5_title}</p>
+                                <p className="text-base">{t.ending_line5_desc.split('\n').map((line, idx) => <React.Fragment key={idx}>{line}<br/></React.Fragment>)}</p>
                             </div>
                         </div>
                     </div>
@@ -916,7 +1152,7 @@
                             className="wood-btn text-white font-black py-5 px-6 rounded-2xl w-full text-xl story-line" 
                             style={visibleLines >= 6 ? {opacity:1, animation:'none'} : {animationDelay:'11s'}}
                         >
-                            임명장 확인하기
+                            {t.ending_btn}
                         </button>
                     </div>
                     {resetModalJSX}
@@ -924,7 +1160,22 @@
             );
 
             if (step === 'reward') return (
-                <div className="mobile-app-container font-ko p-6 pb-12 flex flex-col items-center min-h-screen">
+                <div className="mobile-app-container font-ko p-6 pb-12 flex flex-col items-center min-h-screen relative">
+                    <div className="absolute top-4 right-4 z-[100] flex gap-1.5">
+                        <button 
+                            onClick={() => changeLang('ko')} 
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all border ${lang === 'ko' ? 'bg-[#8b0000] text-white border-[#8b0000]' : 'bg-white/80 text-[#3d2b1f] border-gray-300'}`}
+                        >
+                            한글
+                        </button>
+                        <button 
+                            onClick={() => changeLang('en')} 
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all border ${lang === 'en' ? 'bg-[#8b0000] text-white border-[#8b0000]' : 'bg-white/80 text-[#3d2b1f] border-gray-300'}`}
+                        >
+                            EN
+                        </button>
+                    </div>
+
                     <div ref={certificateRef} className="relative w-full bg-[#fdf5e6] p-10 border-[16px] border-double border-[#8b0000] shadow-2xl text-center mt-6 overflow-hidden">
                         {/* 배경 이미지 추가 */}
                         <div className="absolute inset-0 z-0 flex items-center justify-center opacity-[0.15]">
@@ -939,11 +1190,26 @@
                                 <i data-lucide="compass" style={{width: 60, height: 60}}></i>
                             </div>
 
-                            <h2 className="text-5xl font-en gold-text mb-4 uppercase tracking-tighter">Certificate</h2>
-                            <p className="text-sm font-bold text-[#3d2b1f]/60 mb-10 border-b-2 border-[#3d2b1f]/10 pb-4 tracking-[0.3em] uppercase text-center">낭만 해적단 공식 임명장</p>
+                            <h2 className="text-5xl font-en gold-text mb-4 uppercase tracking-tighter">{t.reward_cert_title}</h2>
+                            <p className="text-sm font-bold text-[#3d2b1f]/60 mb-10 border-b-2 border-[#3d2b1f]/10 pb-4 tracking-[0.3em] uppercase text-center">{t.reward_cert_subtitle}</p>
                             
                             <div className="space-y-6 mb-12">
-                                <p className="text-xl mb-4 font-bold leading-loose keep-all text-[#3d2b1f]">위 사람은 보물찾기로 위장된 <br/><span className="font-black text-3xl text-[#8b0000] my-2 inline-block drop-shadow-sm">낭만 해적단</span>의 <br/>입단 테스트를 훌륭히 통과하였기에 <br/>정식 단원으로 임명함.</p>
+                                {lang === 'ko' ? (
+                                    <p className="text-xl mb-4 font-bold leading-loose keep-all text-[#3d2b1f]">
+                                        위 사람은 보물찾기로 위장된 <br/>
+                                        <span className="font-black text-3xl text-[#8b0000] my-2 inline-block drop-shadow-sm">낭만 해적단</span>의 <br/>
+                                        입단 테스트를 훌륭히 통과하였기에 <br/>
+                                        정식 단원으로 임명함.
+                                    </p>
+                                ) : (
+                                    <p className="text-lg mb-4 font-bold leading-loose keep-all text-[#3d2b1f]">
+                                        This adventurer has successfully passed<br/>
+                                        the admission test of the<br/>
+                                        <span className="font-black text-2xl text-[#8b0000] my-2 inline-block drop-shadow-sm">Romantic Pirates</span><br/>
+                                        disguised as a treasure hunt,<br/>
+                                        and is hereby appointed as an official member.
+                                    </p>
+                                )}
                                 <div className="relative py-4">
                                     <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#3d2b1f]/10"></div></div>
                                     <p className="relative bg-[#fdf5e6]/80 px-4 text-5xl font-black italic text-[#3d2b1f]">"{nickname}"</p>
@@ -952,8 +1218,10 @@
 
                             <div className="flex justify-center items-end border-t border-[#3d2b1f]/10 pt-4">
                                 <div className="text-center">
-                                    <p className="text-[10px] font-bold text-[#3d2b1f]/40 tracking-widest uppercase mb-1">임명 날짜</p>
-                                    <p className="text-sm font-black text-[#3d2b1f]">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                    <p className="text-[10px] font-bold text-[#3d2b1f]/40 tracking-widest uppercase mb-1">{t.reward_cert_date}</p>
+                                    <p className="text-sm font-black text-[#3d2b1f]">
+                                        {new Date().toLocaleDateString(lang === 'ko' ? 'ko-KR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -969,36 +1237,46 @@
                     <div className="mt-10 w-full space-y-6 relative z-10">
                         {!isClaimed ? (
                             <div key="claim-reward-form" className="parchment border-4 border-[#8b0000]/20 p-8 rounded-3xl text-[#3d2b1f] shadow-xl text-center keep-all relative">
-                                <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#8b0000] text-[#d4af37] px-6 py-2 rounded-full text-sm font-black shadow-lg border-2 border-[#d4af37] uppercase tracking-wider">보상을 수령하세요</div>
-                                <p className="text-lg font-bold leading-relaxed mt-4">
-                                    현재 화면을 <span className="font-extrabold text-[#8b0000] bg-yellow-200/80 px-2 py-0.5 rounded-lg mx-1 shadow-sm">레인보우카페</span>의 직원에게 보여주세요!<br/>
-                                    낭만 해적단원의 무기를 지급해 드립니다!<br/>
-                                    <span className="text-sm font-bold text-[#8b0000]/80 mt-2 block">(1인 1회 한정, 중복 수령 불가)</span>
-                                </p>
+                                <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#8b0000] text-[#d4af37] px-6 py-2 rounded-full text-sm font-black shadow-lg border-2 border-[#d4af37] uppercase tracking-wider">
+                                    {t.reward_box_title}
+                                </div>
+                                {lang === 'ko' ? (
+                                    <p className="text-lg font-bold leading-relaxed mt-4">
+                                        현재 화면을 <span className="font-extrabold text-[#8b0000] bg-yellow-200/80 px-2 py-0.5 rounded-lg mx-1 shadow-sm">레인보우카페</span>의 직원에게 보여주세요!<br/>
+                                        낭만 해적단원의 무기를 지급해 드립니다!<br/>
+                                        <span className="text-sm font-bold text-[#8b0000]/80 mt-2 block">(1인 1회 한정, 중복 수령 불가)</span>
+                                    </p>
+                                ) : (
+                                    <p className="text-base font-bold leading-relaxed mt-4">
+                                        Please show this screen to the staff at <span className="font-extrabold text-[#8b0000] bg-yellow-200/80 px-2 py-0.5 rounded-lg mx-1 shadow-sm">Rainbow Cafe</span>!<br/>
+                                        We will issue your pirate weapon toy!<br/>
+                                        <span className="text-xs font-bold text-[#8b0000]/80 mt-2 block">(Limit 1 per person, no duplicates)</span>
+                                    </p>
+                                )}
                                 
                                 <button 
                                     onClick={() => startScanner('reward')} 
                                     className="mt-6 mx-auto px-8 py-4 bg-[#3d2b1f] text-white rounded-xl font-bold text-base shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2 w-auto"
                                 >
                                     <i data-lucide="camera" style={{width: 20, height: 20}}></i>
-                                    무기 수령하기
+                                    {t.reward_btn_claim}
                                 </button>
                             </div>
                         ) : (
                             <div key="reward-claimed-status" className="bg-[#8b0000]/5 border-4 border-dashed border-[#8b0000]/20 p-8 rounded-3xl text-[#8b0000] shadow-inner text-center keep-all">
                                 <i data-lucide="check-circle" className="mx-auto mb-2" style={{width: 32, height: 32}}></i>
-                                <p className="text-xl font-black mb-1">보상 지급 완료</p>
+                                <p className="text-xl font-black mb-1">{t.reward_claimed_title}</p>
                                 <p className="text-sm font-bold opacity-70">
-                                    수령 일시: {claimedAt ? new Date(claimedAt).toLocaleString('ko-KR') : ""}<br/>
-                                    ({elapsedSeconds < 60 ? `${elapsedSeconds}초 전 수령함` : 
-                                      Math.floor(elapsedSeconds / 60) < 60 ? `${Math.floor(elapsedSeconds / 60)}분 전 수령함` : 
-                                      Math.floor(elapsedSeconds / 3600) < 24 ? `${Math.floor(elapsedSeconds / 3600)}시간 전 수령함` : 
-                                      `${Math.floor(elapsedSeconds / 86400)}일 전 수령함`})
+                                    {t.reward_claimed_time}: {claimedAt ? new Date(claimedAt).toLocaleString(lang === 'ko' ? 'ko-KR' : 'en-US') : ""}<br/>
+                                    ({elapsedSeconds < 60 ? `${elapsedSeconds}${t.time_sec}` : 
+                                      Math.floor(elapsedSeconds / 60) < 60 ? `${Math.floor(elapsedSeconds / 60)}${t.time_min}` : 
+                                      Math.floor(elapsedSeconds / 3600) < 24 ? `${Math.floor(elapsedSeconds / 3600)}${t.time_hour}` : 
+                                      `${Math.floor(elapsedSeconds / 86400)}${t.time_day}`})
                                 </p>
                             </div>
                         )}
 
-                        <button onClick={()=> {setStep('intro'); window.scrollTo(0,0);}} className="w-full text-base font-bold text-[#3d2b1f]/60 underline mt-4">처음 화면으로</button>
+                        <button onClick={()=> {setStep('intro'); window.scrollTo(0,0);}} className="w-full text-base font-bold text-[#3d2b1f]/60 underline mt-4">{t.reward_btn_home}</button>
                         
                         <div className="pt-16 pb-8 flex flex-col items-center">
                             {/* 데이터 초기화 버튼 숨김 */}
@@ -1014,13 +1292,20 @@
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-[#d4af37] rounded-2xl animate-pulse"></div>
                             </div>
                             <p onClick={handleSecretTap} className="text-white mt-8 text-lg font-bold text-center keep-all font-ko select-none">
-                                {scanModeRef.current === 'chest' && <>보물 상자의<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
-                                {scanModeRef.current === 'reward' && <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>}
+                                {scanModeRef.current === 'chest' && (
+                                    lang === 'ko' 
+                                        ? <>보물 상자의<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>
+                                        : <>Please scan the<br/><span className="text-[#d4af37]">QR code</span> of the Treasure Chest</>
+                                )}
+                                {scanModeRef.current === 'reward' && (
+                                    lang === 'ko'
+                                        ? <>스태프용 보상 확인<br/><span className="text-[#d4af37]">QR 코드</span>를 인식시켜주세요</>
+                                        : <>Please scan the staff's<br/><span className="text-[#d4af37]">verification QR code</span></>
+                                )}
                                 {['swingship', 'splash', 'flume'].includes(scanModeRef.current) && (
-                                    <>
-                                        해적단의<br/>
-                                        <span className="text-[#d4af37]">표식 QR 코드</span>를 인식시켜주세요
-                                    </>
+                                    lang === 'ko'
+                                        ? <>해적단의<br/><span className="text-[#d4af37]">표식 QR 코드</span>를 인식시켜주세요</>
+                                        : <>Please scan the pirate's<br/><span className="text-[#d4af37]">Mark QR code</span></>
                                 )}
                             </p>
 
@@ -1028,7 +1313,7 @@
                                 onClick={stopScanner}
                                 className="mt-8 px-8 py-3 bg-white/10 text-white rounded-full font-bold border border-white/20 text-sm"
                             >
-                                취소하기
+                                {t.scan_cancel}
                             </button>
                         </div>
                     )}
