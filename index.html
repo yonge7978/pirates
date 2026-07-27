@@ -12,6 +12,10 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Pirata+One&display=swap');
@@ -425,6 +429,7 @@
             const [storySkipCount, setStorySkipCount] = useState(0);
             const [visibleLines, setVisibleLines] = useState(0);
             const [newlyUnlockedStamp, setNewlyUnlockedStamp] = useState(null);
+            const currentStampInfo = newlyUnlockedStamp ? MISSION_DATA.find(m => m.id === newlyUnlockedStamp) : null;
             
             // Hidden Bypass / Reset states
             const [secretTapCount, setSecretTapCount] = useState(0);
@@ -447,6 +452,21 @@
             const scanModeRef = useRef(null);
 
             const t = TRANSLATIONS[lang];
+
+            useEffect(() => {
+                if (window.va) {
+                    window.va('event', { name: `step_${step}` });
+                    if (step === 'reward') {
+                        window.va('event', { name: 'reward_page_view' });
+                    }
+                }
+            }, [step]);
+
+            useEffect(() => {
+                if (claimedAt && window.va) {
+                    window.va('event', { name: 'reward_claimed' });
+                }
+            }, [claimedAt]);
 
             const changeLang = (newLang) => {
                 setLang(newLang);
@@ -1023,7 +1043,7 @@
                         </div>
                     )}
 
-                    {newlyUnlockedStamp && (
+                    {newlyUnlockedStamp && currentStampInfo && (
                         <div className="fixed inset-0 bg-black/85 flex items-center justify-center p-6 z-[100] backdrop-blur-md">
                             <div className="parchment animate-shake w-full max-w-xs p-8 rounded-3xl text-center shadow-2xl border-8 border-double border-[#8b0000]/40 relative overflow-hidden flex flex-col items-center">
                                 {/* Decorative elements */}
@@ -1039,15 +1059,15 @@
 
                                 {/* Stamp Animation Container */}
                                 <div className="relative w-44 h-44 my-4 flex items-center justify-center bg-white/20 rounded-full shadow-inner border border-[#3d2b1f]/5">
-                                    {MISSION_DATA.find(m => m.id === newlyUnlockedStamp).image ? (
+                                    {currentStampInfo.image ? (
                                         <img 
-                                            src={MISSION_DATA.find(m => m.id === newlyUnlockedStamp).image} 
+                                            src={currentStampInfo.image} 
                                             className="w-40 h-40 object-contain animate-stamp-drop" 
                                             alt="Stamped mark" 
                                         />
                                     ) : (
                                         <div className="stamp-circle border-4 border-[#8b0000] w-32 h-32 flex items-center justify-center animate-stamp-drop">
-                                            <span className="stamp-ink text-5xl">{MISSION_DATA.find(m => m.id === newlyUnlockedStamp).icon}</span>
+                                            <span className="stamp-ink text-5xl">{currentStampInfo.icon}</span>
                                         </div>
                                     )}
                                 </div>
